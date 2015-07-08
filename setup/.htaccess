@@ -1,0 +1,5 @@
+
+<Files init_db.sql>
+	Order Allow,Deny
+	Deny from all
+</Files> 
