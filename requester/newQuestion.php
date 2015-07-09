@@ -113,6 +113,10 @@ if(isset($_POST['question'])){
 	</select><br/>
 	Input file : <input type="file" name="inputFile"/><br/>
 	<br/>
+	Assignment type : <select name="assignment">
+		<option>open</option>
+		<option>waiting</option>
+	</select>
 	Question possible answers, separated by ";" :<br/>
 	<textarea name="answers" rows='4' cols='50'></textarea><br/>
 	<input type="submit"/>

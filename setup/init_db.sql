@@ -30,7 +30,7 @@ CREATE TABLE question (
 	question varchar(256) NOT NULL,
 	input varchar(256),
 	inputType varchar(16),
-	completed boolean NOT NULL DEFAULT False
+	status varchar(16)
 );
 
 CREATE TABLE answer (
