@@ -1,0 +1,25 @@
+This crowdsourcing framework is currently under development.
+
+
+Here are some instruction to install it and test the current functions : 
+
+############################## SETUP ######################################
+
+
+REQUIRED SOFTWARE
+Note : the software names are given for a linux machine; there are most likely equivalent on 
+Windows or Mac, but i don't know the names.
+
+1. Install apache2 (or any web server that can run php)
+2. Install php5 (i currently develop on php 5.6, but it should work under any 5.X version)
+3. Install php5-mysql
+4. Install mysql-server
+
+
+INSTALL THE FRAMEWORK
+
+1. Copy the framework files into a folder of your web-server
+	example : /var/www/html/crowdFmw
+2. Navigate to <framework address>/setup
+	example : /var/www/html/crowdFmw/setup
+3. Follow the steps to initialize your database

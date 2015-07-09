@@ -41,3 +41,5 @@ if(isset($_POST['logtype'])){
 	password : <input type="password" name="pass"/><br/>
 	<input type="submit"/>
 </form>
+<br/>
+<a href='?page=register'>Register on the platform</a>
