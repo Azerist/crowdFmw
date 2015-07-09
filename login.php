@@ -7,7 +7,7 @@ if(isset($_POST['logtype'])){
 	
 	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 	if(!$db)
-		exit('Error while connecting to the database :<br/>'.$db->connect_error());
+		exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 	$query = $db->query("SELECT id,password FROM ".$_POST['logtype']." WHERE username='".$_POST['login']."';");
 	if(!$query){

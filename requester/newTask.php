@@ -32,8 +32,9 @@ if(isset($_POST['taskName']))
 		}
 		else{
 		?>
-		<p>Task successfully created.</p>
+		<p>Task successfully inserted into database.</p>
 		<a href='?page=newQuestion'>Add a question</a><br/>
+		<a href='?page=listTasks'>See your tasks list</a><br/>
 		<a href='?page=index'>return to index</a>
 
 		<?php

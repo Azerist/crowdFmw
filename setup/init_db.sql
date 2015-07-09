@@ -30,7 +30,9 @@ CREATE TABLE question (
 	question varchar(256) NOT NULL,
 	input varchar(256),
 	inputType varchar(16),
-	status varchar(16)
+	status varchar(16),
+	extParams varchar(128),
+	target int
 );
 
 CREATE TABLE answer (

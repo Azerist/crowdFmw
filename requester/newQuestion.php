@@ -24,11 +24,11 @@ if(isset($_POST['question'])){
 
 			$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 			if(!$db)
-				exit('Error while connecting to the database :<br/>'.$db->connect_error());
+				exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
-			$sql1 = "INSERT INTO question(question,inputType,id_task";
+			$sql1 = "INSERT INTO question(question,inputType,id_task,status,target";
 			$question = str_replace(array(';','"'),array(',',"'"),$_POST['question']);
-			$sql2 = 'VALUES ("'.$question.'","'.$_POST['inputType'].'",'.$_POST['taskid'];
+			$sql2 = 'VALUES ("'.$question.'","'.$_POST['inputType'].'",'.$_POST['taskid'].',"'.$_POST['assignment'].'",'.$_POST['target'];
 
 			if($_POST['inputType']!="none"){
 				$sql1 = $sql1.',input';
@@ -117,7 +117,10 @@ if(isset($_POST['question'])){
 		<option>open</option>
 		<option>waiting</option>
 	</select>
+	 if "waiting", you can specify here parameters for an external assignment algorithm : <input type="text" name="extparams"/>
+	 <br/>
 	Question possible answers, separated by ";" :<br/>
 	<textarea name="answers" rows='4' cols='50'></textarea><br/>
+	Target number of contributions : <input type="text" name="target"/> Integer value, -1 for manual or external algorithm.<br/>
 	<input type="submit"/>
 </form>

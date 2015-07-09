@@ -8,7 +8,7 @@ class birthdate{
 
 		$db = new mysqli($myslq->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 		if(!$db)
-			exit('Database connection problem while initializing birthdate feature : '.$db->connect_error());
+			exit('Database connection problem while initializing birthdate feature : '.$db->connect_error);
 
 		$query = $db->query( 'ALTER TABLE worker ADD birthdate DATE DEFAULT NULL');
 		if(!$query){
