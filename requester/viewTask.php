@@ -8,7 +8,27 @@ if(!$db)
 	exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 if(isset($_POST['taskName'])){
-	#TODO
+	
+	$sql = 'UPDATE task SET ';
+
+	$name = FALSE;
+	if($_POST['taskName'] != ''){
+		$sql = $sql.'name="'.$_POST['taskName'].'"';
+		$name = TRUE;
+	}
+
+	if($_POST['description'] != '' && $_POST['description'] != "Task description"){
+		if($name)
+			$sql = $sql.',';
+		$sql = $sql.'description="'.$_POST['description'].'" ';
+	}
+	
+	$sql = $sql.'WHERE id='.$_GET['id'];
+
+	$query = $db->query($sql);
+
+	if(!$query)
+		echo 'Could not update data : '.$db->error.' <br/>';
 }
 
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']);

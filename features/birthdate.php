@@ -20,9 +20,13 @@ class birthdate{
 		$db->close();
 	}
 
-	public function htmlForm(){	#Writes the html code to be inserted in the registration form.
+	public function htmlForm($data = NULL){	#Writes the html code to be inserted in the registration or edit profile form.
+		if($data != NULL)
+			$value = $data['birthdate'];
+		else
+			$value = '';
 		?>
-		Birthdate : <input type="date" name="birthdate"/>
+		Birthdate : <input type="date" name="birthdate" value="<?=$value?>"/>
 		<?php
 	}
 
@@ -42,5 +46,18 @@ class birthdate{
 		}
 		return $sql;
 
+	}
+
+	public function getProfileForm($form,$sql){
+		if(!isset($form['birthdate']) || $form['birthdate'] == ''){
+			$sql->ok = FALSE;
+			$sql->err = "You must enter your birthdate.";
+		}
+		else{
+			$date = $post['birthdate'];
+			$sql->sql = $sql->sql.',birthdate='.$date;
+			$sql->ok = TRUE;
+		}
+		return $sql;
 	}
 } 
