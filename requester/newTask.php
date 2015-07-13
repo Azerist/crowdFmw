@@ -5,16 +5,13 @@ if(isset($_POST['taskName']))
 	if($_POST['taskName'] == '')
 		echo 'Please enter a name for your task';
 
-	elseif(strpos($_POST['taskName'],';')!==FALSE || strpos($_POST['taskName'],"'")!==FALSE || strpos($_POST['taskName'],'"')!==FALSE)
-		echo "You must not use ; ' or ".'" in the task name.';
-
 	else{
 		$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 		if(!$db)
 			exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 		$sql1 = "INSERT INTO task(name,id_requester";
-		$sql2 = "VALUES ('".$_POST['taskName']."',".$_SESSION['userid'];
+		$sql2 = 'VALUES ("'.str_replace('"',"'",$_POST['taskName']).'",'.$_SESSION['userid'];
 
 		if($_POST['description'] != "" && $_POST['description'] != 'Task description'){
 			$sql1 = $sql1.',description';
@@ -41,7 +38,6 @@ if(isset($_POST['taskName']))
 		exit();
 		}
 	}
-
 
 ?>
 <form method='post'>

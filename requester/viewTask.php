@@ -1,12 +1,14 @@
 <?php
 
+//If no id is provided
 if(!isset($_GET['id']))
 	exit('task id missing');
-
+//open database
 $db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 if(!$db)
 	exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
+//If the form has been submitted, update the database
 if(isset($_POST['taskName'])){
 	
 	$sql = 'UPDATE task SET ';
@@ -31,6 +33,7 @@ if(isset($_POST['taskName'])){
 		echo 'Could not update data : '.$db->error.' <br/>';
 }
 
+//Get task data from the database
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']);
 
 if(!$query){
@@ -44,6 +47,7 @@ if($query->num_rows == 0){
 }
 
 $task = $query->fetch_assoc();
+//Display task information
 ?>
 <h2>Details of task  <?=$task['name']?></h2>
 <h3>task description :</h3>
@@ -56,7 +60,8 @@ $task = $query->fetch_assoc();
 </form>
 
 <?php
-$query = $db->query('SELECT * FROM question WHERE id='.$task['id']);
+//Get all the questions linked to this task from database
+$query = $db->query('SELECT * FROM question WHERE id_task='.$task['id']);
 
 if(!$query){
 	$err = $db->error;
@@ -72,11 +77,13 @@ if($query->num_rows !=0){
 				<th>Question</th>
 				<th>Answers</th>
 				<th># of contrib.</th>
-				<th>target # of contrib.</th>
+				<th>Target # of contrib.</th>
+				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
+		//For each question, get the answers linked to it
 		while($question = $query->fetch_assoc()){
 			$query2 = $db->query('SELECT answer FROM answer WHERE id_question='.$question['id']);
 			if(!$query){
@@ -101,11 +108,17 @@ if($query->num_rows !=0){
 				<td>
 					<?=$question['target']?>
 				</td>
+				<td>
+					<a href='?page=deleteQuestion&id=<?=$question["id"]?>'>delete</a>
+				</td>
 			</tr>
+		
+		<?php
+		}
+		?>
 		</tbody>
 	</table>
 	<?php
-	}
 }
 
 $db->close();

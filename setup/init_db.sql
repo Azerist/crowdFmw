@@ -61,13 +61,13 @@ ADD(
 ALTER TABLE question
 ADD(
 	id_task int NOT NULL,
-	FOREIGN KEY (id_task) REFERENCES task(id)
+	FOREIGN KEY (id_task) REFERENCES task(id) ON DELETE CASCADE
 );
 
 ALTER TABLE answer
 ADD(
 	id_question int NOT NULL,
-	FOREIGN KEY (id_question) REFERENCES question(id)
+	FOREIGN KEY (id_question) REFERENCES question(id) ON DELETE CASCADE
 );
 
 ALTER TABLE contribution
@@ -75,7 +75,7 @@ ADD(
 	id_question int NOT NULL,
 	id_worker int NOT NULL,
 	id_answer int NOT NULL,
-	FOREIGN KEY (id_question) REFERENCES question(id),
+	FOREIGN KEY (id_question) REFERENCES question(id) ON DELETE CASCADE,
 	FOREIGN KEY (id_worker) REFERENCES worker(id),
 	FOREIGN KEY (id_answer) REFERENCES answer(id)
 );
@@ -84,7 +84,7 @@ ALTER TABLE assignment
 ADD(
 	id_question int NOT NULL,
 	id_worker int NOT NULL,
-	FOREIGN KEY (id_question) REFERENCES question(id),
+	FOREIGN KEY (id_question) REFERENCES question(id) ON DELETE CASCADE,
 	FOREIGN KEY (id_worker) REFERENCES worker(id)
 );
 
