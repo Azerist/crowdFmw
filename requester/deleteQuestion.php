@@ -71,3 +71,4 @@ $db->close();
 	<input type="radio" name="sure" value='no' checked/>No<br/>
 	<input type="submit"/>
 </form>
+

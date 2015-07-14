@@ -6,8 +6,8 @@ $db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$my
 if(!$db)
 	exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
-$query = $db->query('SELECT question.id, question.question FROM question,attribution 
-						WHERE question.id=attribution.id_question AND attribution.id_user='.$_SESSION['userid']);
+$query = $db->query('SELECT question.id, question.question FROM question,assignment 
+						WHERE question.id=assignment.id_question AND assignment.id_worker='.$_SESSION['userid']);
 
 if(!$query){
 	$err = $db->error;
@@ -22,7 +22,7 @@ if($query->num_rows != 0){
 	echo('</ul>');
 }
 
-$query = $db->query('SELECT id,question FROM question WHERE status="open" AND id='.$_GET['id']);
+$query = $db->query('SELECT id,question FROM question WHERE status="open"');
 
 if(!$query){
 	$err = $db->error;

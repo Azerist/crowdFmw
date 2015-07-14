@@ -11,4 +11,9 @@ class none{
 
 		return TRUE;
 	}
+
+	public function display(){
+		//echoes the html to display the file
+		
+	}
 }

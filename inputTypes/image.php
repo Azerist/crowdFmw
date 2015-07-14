@@ -21,4 +21,11 @@ class image{
 		else
 			return FALSE;
 	}
+
+	public function display(){
+		//echoes the html to display the file
+		?>
+		<img src='<?=$this->path?>'/>
+		<?php
+	}
 }
