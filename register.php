@@ -36,7 +36,6 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 			}
 		}
 
-		if($sql->ok){
 			//Connect to the database and do insert the data
 		$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 		if(!$db)
@@ -57,7 +56,6 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 		<a href='.?page=login'>Go back to the login page</a>
 		<?php
 		exit();
-		}
 	}
 }
 

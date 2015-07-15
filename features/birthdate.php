@@ -14,7 +14,7 @@ class birthdate{
 		if(!$query){
 			$err = $db->error;
 			$db->close();
-			exit("could not create a column 'birthdate' in the table 'worker' : ".$err);
+			exit("could not create a column 'birthdate' in the table 'worker' : $err");
 		}
 
 		$db->close();
@@ -31,7 +31,7 @@ class birthdate{
 	}
 
 	public function getForm($form,$sql){
-		#Gets the html form result in $form, edit first part of sql query (INSERT INTO worker(...)) in $sql->sql1 and the second part (VALUES (...)) in $sql->sql2
+		#Gets the html registration form result in $form, edit first part of sql query (INSERT INTO worker(...)) in $sql->sql1 and the second part (VALUES (...)) in $sql->sql2
 		#Also returns $sql->ok as TRUE or FALSE, and can set an error message in $sql->err
 
 		if(!isset($form['birthdate']) || $form['birthdate'] == ''){
@@ -39,7 +39,7 @@ class birthdate{
 			$sql->err = "You must enter your birthdate.";
 		}
 		else{
-			$date = $post['birthdate'];
+			$date = $form['birthdate'];
 			$sql->sql1 = $sql->sql1.',birthdate';
 			$sql->sql2 = $sql->sql2.',"'.$date.'"';
 			$sql->ok = TRUE;
@@ -49,6 +49,7 @@ class birthdate{
 	}
 
 	public function getProfileForm($form,$sql){
+		//Same as getForm, but generate an update query for the update profile form.
 		if(!isset($form['birthdate']) || $form['birthdate'] == ''){
 			$sql->ok = FALSE;
 			$sql->err = "You must enter your birthdate.";
@@ -58,6 +59,31 @@ class birthdate{
 			$sql->sql = $sql->sql.',birthdate='.$date;
 			$sql->ok = TRUE;
 		}
+		return $sql;
+	}
+
+	public function assignmentForm(){
+		//Generates the html form to chose attribution criteria
+		?>
+		Minimum age : <input type="text" name="minAge"/><br/>
+		Maximum age : <input type="text" name="maxAge"/><br/>
+		Integer values; let empty to ignore a criteria.
+		<?php
+	}
+
+	public function getAssignmentForm($form,$sql){
+		//Treats the data from the attribution form and generates a sql condition
+		$min = intval($form['minAge']);
+		$max = intval($form['maxAge']);
+
+		if($min != 0)
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)>={$min*365}";
+
+		if($max != 0)
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)<={$max*365}";		
+
+		$sql->ok = TRUE;
+
 		return $sql;
 	}
 } 
