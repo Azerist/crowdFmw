@@ -35,27 +35,28 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 				}	
 			}
 		}
-
+		if($sql->ok){
 			//Connect to the database and do insert the data
-		$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
-		if(!$db)
-			exit('Error while connecting to the database :<br/>'.$db->connect_error);
-
-		$sql->sql1 = $sql->sql1.')';
-		$sql->sql2 = $sql->sql2.')';
-
-		$query = $db->query($sql->sql1.$sql->sql2);
-		if(!$query){
-			$err = $db->error;
+			$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
+			if(!$db)
+				exit('Error while connecting to the database :<br/>'.$db->connect_error);
+	
+			$sql->sql1 = $sql->sql1.')';
+			$sql->sql2 = $sql->sql2.')';
+	
+			$query = $db->query($sql->sql1.$sql->sql2);
+			if(!$query){
+				$err = $db->error;
+				$db->close();
+				exit('Database error : '.$err);
+			}
 			$db->close();
-			exit('Database error : '.$err);
+			?>
+			<p>Account succesfully created !</p>
+			<a href='.?page=login'>Go back to the login page</a>
+			<?php
+			exit();
 		}
-		$db->close();
-		?>
-		<p>Account succesfully created !</p>
-		<a href='.?page=login'>Go back to the login page</a>
-		<?php
-		exit();
 	}
 }
 

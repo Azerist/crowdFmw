@@ -57,4 +57,6 @@ while($answer = $query->fetch_assoc()){
 }
 
 echo '<input type="submit"/></form>';
+
+$db->close();
 ?>

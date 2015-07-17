@@ -73,14 +73,14 @@ class birthdate{
 
 	public function getAssignmentForm($form,$sql){
 		//Treats the data from the attribution form and generates a sql condition
-		$min = intval($form['minAge']);
-		$max = intval($form['maxAge']);
+		$min = intval($form['minAge']) * 365;
+		$max = intval($form['maxAge']) * 365;
 
 		if($min != 0)
-			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)>={$min*365}";
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)>=$min";
 
 		if($max != 0)
-			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)<={$max*365}";		
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)<=$max";		
 
 		$sql->ok = TRUE;
 

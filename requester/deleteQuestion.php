@@ -21,8 +21,10 @@ if(isset($_POST['sure']) && $_POST['sure'] == 'yes'){
 		exit('Database error : '.$err);
 	}
 	$result = $query->fetch_assoc();
-	if($result == NULL || $result['id_requester'] != $_SESSION['userid'])
+	if($result == NULL || $result['id_requester'] != $_SESSION['userid']){
+		$db->close();
 		exit('Error : You are not owner of this question !');
+	}
 
 	//Delete the input file linked to the question
 	$query = $db->query('SELECT input FROM question WHERE id='.$_GET['id']);
