@@ -33,16 +33,6 @@ if(isset($_POST['taskName'])){
 		echo 'Could not update data : '.$db->error.' <br/>';
 }
 
-//Check if the user owns this task
-$query = $db->query('SELECT id_requester FROM task WHERE id='.$_GET['id']);
-if(!$query){
-	$err = $db->error;
-	$db->close();
-	exit('Database error : '.$err);
-}
-if($result = $query->fetch_assoc() == NULL || $result['id_requester'] != $_SESSION['userid'])
-	exit("Error : you don't own this task.");
-
 //Get task data from the database
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']);
 

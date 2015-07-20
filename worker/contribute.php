@@ -58,3 +58,4 @@ if(!$query){
 $db->close();
 ?>
 <p>Contribution successfully registered.</p>
+
