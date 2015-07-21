@@ -1,10 +1,13 @@
 <h2>View and edit your profile</h2>
 
 <?php 
+//Connect to the database
 $db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 if(!$db)
 	exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
+//================================================================================================================================
+//if the form has been submitted, treat the data
 if(isset($_POST['regUN'])){
 
 	if($_POST['regUN'] == '')
@@ -26,8 +29,9 @@ if(isset($_POST['regUN'])){
 			$features = scandir("features");
 			foreach ($features as $filename) {
 				if(substr($filename,-4) == ".php"){
-					include 'features/'.$filename;
 					$class = str_replace('.php', '', $filename);
+					if(!class_exists($class))
+						include 'features/'.$filename;
 					$feat = new $class();
 					$sql = $feat->getProfileForm($_POST,$sql);
 					if(!$sql->ok){
@@ -51,6 +55,8 @@ if(isset($_POST['regUN'])){
 	}
 }
 
+//======================================================================================================================
+//Get the user info from the database
 $query = $db->query("SELECT * FROM ".$_SESSION['usermode']." WHERE id=".$_SESSION['userid']);
 if(!$query){
 	$err = $db->error;
@@ -59,6 +65,7 @@ if(!$query){
 }
 
 $user = $query->fetch_assoc();
+//Echo the form prefilled with the user data
 ?>
 
 <form method="post" accept-charset="utf-8">

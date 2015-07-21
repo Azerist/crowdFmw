@@ -10,13 +10,13 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 		echo "The two passwords don't match";
 	//Refuse forbidden characters.
 	elseif(strpos($_POST['regUN'],';')!==FALSE || strpos($_POST['regUN'],"'")!==FALSE || strpos($_POST['regUN'],'"')!==FALSE)
-		echo "You must not use ; ' or ".'" in your username.';
+		echo "You must not use ; ' or \" in your username.";
 
-	else{
-		//Initialize an object to store the two parts of the sql request, that will be filled iteratively
+	else{//if everything is ok
+		//Initialize an object to store the two parts of the sql request, that will be filled iteratively by the feature classes
 		$sql = new stdClass();
-		$sql->sql1 = 'INSERT INTO '.$_POST['regType'].'(username,password';
-		$sql->sql2 = 'VALUES ("'.$_POST['regUN'].'","'.password_hash($_POST['pass'], PASSWORD_DEFAULT).'"';
+		$sql->sql1 = "INSERT INTO $_POST[regType](username,password";
+		$sql->sql2 = "VALUES ('$_POST[regUN]','".password_hash($_POST['pass'], PASSWORD_DEFAULT)."'";
 		$sql->ok = TRUE;
 		
 		//If the user is registering as a worker, treat the features
@@ -24,8 +24,9 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 			$features = scandir("features");
 			foreach ($features as $filename) {
 				if(substr($filename,-4) == ".php"){
-					include 'features/'.$filename;
 					$class = str_replace('.php', '', $filename);
+					if(!class_exists($class))
+						include 'features/'.$filename;
 					$feat = new $class();
 					$sql = $feat->getForm($_POST,$sql);
 					if(!$sql->ok){
@@ -68,18 +69,18 @@ if(isset($_POST['regType'])){ 	//treat the data from the first form, and generat
 		Chose a password and confirm : <input type="password" name="pass"/> <input type="password" name="pass2"/><br/>
 		<?php
 		if($_POST['regType'] == 'worker'){
-				//For workers, add the form lines for the features
-				$features = scandir("features");
-				foreach ($features as $filename) {
-					if(substr($filename,-4) == ".php"){
-						$class = str_replace('.php', '', $filename);
-						if(!class_exists($class))
-							include 'features/'.$filename;
-						$feat = new $class();
-						$feat->htmlForm();
-						echo "<br/>";
-					}	
-				}
+			//For workers, add the form lines for the features
+			$features = scandir("features");
+			foreach ($features as $filename) {
+				if(substr($filename,-4) == ".php"){
+					$class = str_replace('.php', '', $filename);
+					if(!class_exists($class))
+						include 'features/'.$filename;
+					$feat = new $class();
+					$feat->htmlForm();
+					echo "<br/>";
+				}	
+			}
 		}
 		?>
 		<input type="hidden" name="regType" value="<?=$_POST['regType']?>">

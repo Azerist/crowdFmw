@@ -22,7 +22,7 @@ if($query->num_rows != 0){
 	echo('</ul>');
 }
 
-//TODO : remove questions where the user has already contributed.
+//get available questions where the user has already contributed.
 $query = $db->query('SELECT id,question FROM question WHERE status="open" 
 						AND id NOT IN (SELECT id_question FROM contribution WHERE id_worker='.$_SESSION['userid'].')');
 

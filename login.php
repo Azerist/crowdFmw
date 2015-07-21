@@ -1,8 +1,11 @@
 <h2>Login</h2>
 <?php
+//If a session is already set, exit this script
 if(isset($_SESSION['usermode']))
 	exit("It looks like you're already connected.<br/> Do you want to <a href='.?page=logout'>logout</a> ?");
 
+//======================================================================================================================
+//if the login form has already been submitted, check the entered login data
 if(isset($_POST['logtype'])){
 	
 	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
@@ -30,9 +33,10 @@ if(isset($_POST['logtype'])){
 	<p color='red'>Incorrect login information.</p>
 	<?php
 	$db->close();
-
 }
 
+//======================================================================================================================
+//else, or if the data is incorrect, echo the login form
 ?>
 
 <form action=".?page=login" method="post" accept-charset="utf-8">

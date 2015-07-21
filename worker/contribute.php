@@ -1,9 +1,11 @@
 <h2>contribute</h2>
 <?php 
 
+//if the required data is not provided, exit the script
 if(!isset($_GET['question'],$_POST['answer']))
 	exit('Error : the data sent by your browser is incorrect.');
 
+//Connect to the database
 $db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 if(!$db)
 	exit('Error while connecting to the database :<br/>'.$db->connect_error);
