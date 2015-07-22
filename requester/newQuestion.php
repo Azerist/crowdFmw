@@ -1,56 +1,66 @@
 <h2>Add a question to a task</h2>
 
 <?php
+//if the form has been submitted, treat the data
 if(isset($_POST['question'])){
-	if($_POST['question'] == '' || $_POST['answers'] == '')
+	if($_POST['question'] == '' || $_POST['answers'] == '')//If essential data is missing
 		echo 'please fill the form !';
 	else{
-		if(!include('inputTypes/'.$_POST['inputType'].'.php'))
-			exit('FATAL ERROR : could not find file '.'inputTypes/'.$_POST['inputType'].'.php');
+		//Load the inputType class 
+		if(!include("inputTypes/$_POST[inputType].php"))
+			exit("FATAL ERROR : could not find file 'inputTypes/$_POST[inputType].php'");
 		
+		//if the inputType is null, use an empty file name
 		if($_POST['inputType'] == 'none')
-			$_FILES['inputFile']['name'] = '';
+			$file = '';
+		else
+			$file = 'questionFiles/'.$_FILES['inputFile']['name'];
 		
-		$type = new $_POST['inputType']($_FILES['inputFile']['name']);
+		//create an instance of the inputType class
+		$type = new $_POST['inputType']($file);
 
-		if(!$type->checkType())
+		if(!$type->checkType())//check the file extention
 			echo 'The uploaded file extension do not match the chosen input type';
 		else{
-
+			//if correct, move the file to the questionFiles directory
 			if($_POST['inputType'] != "none")
 				if(!move_uploaded_file($_FILES['inputFile']['tmp_name'], 'questionFiles/'.$_FILES['inputFile']['name']))
 					exit('Fatal error : could not move the uploaded file.');
 
-
+			//connect to the database
 			$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 			if(!$db)
 				exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
-			$sql1 = "INSERT INTO question(question,inputType,id_task,status,target";
-			$question = str_replace(array(';','"'),array(',',"'"),$_POST['question']);
-			$sql2 = 'VALUES ("'.$question.'","'.$_POST['inputType'].'",'.$_POST['taskid'].',"'.$_POST['assignment'].'",'.$_POST['target'];
+			//escape the quote character to prevent sql syntax error
+			$question = str_replace("'","''",$_POST['question']);			
+			$file = str_replace("'","''",$file);
 
-			if($_POST['inputType']!="none"){
-				$sql1 = $sql1.',input';
-				$sql2 = $sql2.',"'.'questionFiles/'.$_FILES['inputFile']['name'].'"';
-			}
 
-			$sql1 = $sql1.')';
-			$sql2 = $sql2.')';
-		
-			$query = $db->query($sql1.$sql2);
+			//prepare the query to insert the new question in the database
+			$sql = "INSERT INTO question(question,inputType,id_task,status,target,input)
+						VALUES ('$question','$_POST[inputType]',$_POST[taskid],'$_POST[assignment]',$_POST[target],'$file')";
+			
+			//execute it		
+			$query = $db->query($sql);
 			if(!$query){
 				$err = $db->error;
 				$db->close();
 				exit('Database error : '.$err);
 			}
 
+			//Treat the question answers
+			//explode the form string to get the separate answers
 			$answers = explode(';',str_replace(array('\r','\n'),'',$_POST['answers']));
+
+			//get the id of the inserted question
 			$id = $db->insert_id;
 
+			//insert each answer in the database
 			foreach ($answers as $ans) {
-				$ans = str_replace('"',"'",$ans);
-				$query = $db->query('INSERT INTO answer(answer,id_question) VALUES ("'.$ans.'",'.$id.');');
+				$ans = str_replace("'","''",$ans); //escape quotes
+				//insert it
+				$query = $db->query("INSERT INTO answer(answer,id_question) VALUES ('$ans',$id);");
 				if(!$query){
 					$err = $db->error;
 					$db->close();
@@ -62,6 +72,7 @@ if(isset($_POST['question'])){
 			<a href=''>Add a new question</a>
 			<a href='?page=index'>Return to the index</a>
 			<?php
+			$db->close();
 			exit();
 		}
 
@@ -101,6 +112,7 @@ if(isset($_POST['question'])){
 	<br/>
 	Input file type : <select name='inputType'><option selected>none</option>
 		<?php
+			//generate a choice list with the available inputTypes
 			$types = scandir("inputTypes");
 			foreach ($types as $filename) {
 				if(substr($filename,-4) == ".php"){
