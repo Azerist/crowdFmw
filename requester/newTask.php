@@ -20,7 +20,7 @@ if(isset($_POST['taskName']))
 		//if a description is provided, add it to the query
 		if($_POST['description'] != "" && $_POST['description'] != 'Task description'){
 			$sql1 = $sql1.',description';
-			$sql2 = $sql2.',"'.str_replace('"',"'",$_POST['description']).'"';
+			$sql2 = $sql2.',"'.htmlentities($_POST['description']).'"';
 		}
 
 		//Complete the query and execute it

@@ -43,7 +43,7 @@ if(!$query){
 	exit('Database error : '.$err);
 }
 ?>
-<table>
+<table border='1'>
 	<thead>
 		<tr>
 			<th>Answer</th>
@@ -53,6 +53,7 @@ if(!$query){
 	</thead>
 	<tbody>
 		<?php
+		//For each answer, get the number of contributions
 		while($ans = $query->fetch_assoc()){
 			echo "<tr>\n<td>$ans[answer]</td>\n";
 			$query2 = $db->query("SELECT count(*) FROM contribution WHERE id_answer=$ans[id]");

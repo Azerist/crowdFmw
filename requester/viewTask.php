@@ -40,7 +40,8 @@ if(!$query){
 	$db->close();
 	exit('Database error : '.$err);
 }
-if($result = $query->fetch_assoc() == NULL || $result['id_requester'] != $_SESSION['userid'])
+$result = $query->fetch_assoc();
+if( $result == NULL || $result['id_requester'] != $_SESSION['userid'])
 	exit("Error : you don't own this task.");
 
 //Get task data from the database
@@ -88,6 +89,7 @@ if($query->num_rows !=0){
 				<th>Answers</th>
 				<th># of contrib.</th>
 				<th>Target # of contrib.</th>
+				<th>Get results</th>
 				<th>Delete</th>
 			</tr>
 		</thead>
@@ -113,10 +115,13 @@ if($query->num_rows !=0){
 					?>
 				</td>
 				<td>
-					<?php echo $db->query('SELECT count(*) FROM contribution WHERE id_answer='.$question['id'])->fetch_assoc()['count(*)'];?>
+					<?php echo $db->query('SELECT count(*) FROM contribution WHERE id_question='.$question['id'])->fetch_assoc()['count(*)'];?>
 				</td>
 				<td>
 					<?=$question['target']?>
+				</td>
+				<td>
+					<a href='?page=getResult&question=<?=$question['id']?>'>Results</a>
 				</td>
 				<td>
 					<a href='?page=deleteQuestion&id=<?=$question["id"]?>'>delete</a>
@@ -133,3 +138,5 @@ if($query->num_rows !=0){
 
 $db->close();
 ?>
+<a href='?page=index'>Go back to the index</a>
+<a href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>
