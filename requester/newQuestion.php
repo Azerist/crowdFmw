@@ -15,6 +15,13 @@ if(isset($_POST['question'])){
 			$file = '';
 		else
 			$file = 'questionFiles/'.$_FILES['inputFile']['name'];
+
+		//Check if there exists a file with the same name, and rename it if necessary
+		$numb = 1;
+		while(file_exsts($file)){
+			$file = "questionFiles/$numb-$_FILES['inputFile']['name']";
+			$numb++;
+		}
 		
 		//create an instance of the inputType class
 		$type = new $_POST['inputType']($file);
@@ -24,31 +31,20 @@ if(isset($_POST['question'])){
 		else{
 			//if correct, move the file to the questionFiles directory
 			if($_POST['inputType'] != "none")
-				if(!move_uploaded_file($_FILES['inputFile']['tmp_name'], 'questionFiles/'.$_FILES['inputFile']['name']))
+				if(!move_uploaded_file($_FILES['inputFile']['tmp_name'], $filepath))
 					exit('Fatal error : could not move the uploaded file.');
-
-			//connect to the database
-			$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
-			if(!$db)
-				exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 			//escape the quote character to prevent sql syntax error
 			$question = str_replace("'","''",$_POST['question']);			
 			$file = str_replace("'","''",$file);
 
-
 			//prepare the query to insert the new question in the database
-			$sql = "INSERT INTO question(question,inputType,id_task,status,target,input)
-						VALUES ('$question','$_POST[inputType]',$_POST[taskid],'$_POST[assignment]',$_POST[target],'$file')";
-			
-			//execute it		
-			$query = $db->query($sql);
-			if(!$query){
-				$err = $db->error;
-				$db->close();
-				exit('Database error : '.$err);
-			}
+			$sql = "INSERT INTO question(question,inputType,id_task,input)
+						VALUES ('$question','$_POST[inputType]',$_POST[taskid],'$file')";
 
+			//execute it		
+			$query = $db->query($sql) or dbErr();
+		
 			//Treat the question answers
 			//explode the form string to get the separate answers
 			$answers = explode(';',str_replace(array('\r','\n'),'',$_POST['answers']));
@@ -60,12 +56,7 @@ if(isset($_POST['question'])){
 			foreach ($answers as $ans) {
 				$ans = str_replace("'","''",$ans); //escape quotes
 				//insert it
-				$query = $db->query("INSERT INTO answer(answer,id_question) VALUES ('$ans',$id);");
-				if(!$query){
-					$err = $db->error;
-					$db->close();
-					exit('Database error : '.$err);
-				}
+				$query = $db->query("INSERT INTO answer(answer,id_question) VALUES ('$ans',$id);") or dbErr();
 			}
 			?>
 			<p>Question successfully added</p>
@@ -83,20 +74,11 @@ if(isset($_POST['question'])){
 <form method='post' enctype="multipart/form-data">
 	<?php
 	//Take the list of the user's tasks from the db and generate a choice list in the form
-	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
-	if(!$db)
-		exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
-	$query = $db->query('SELECT id,name FROM task WHERE id_requester='.$_SESSION['userid']);
-
-	if(!$query){
-		$err = $db->error;
-		$db->close();
-		exit('Database error : '.$err);
-	}
+	$query = $db->query('SELECT id,name FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr();
 
 	if($query->num_rows == 0)
-		exit('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>');
+		error('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>');
 
 	echo "Choose the task linked to this question : <select name='taskid'>";
 	while($result = $query->fetch_assoc()){
@@ -125,14 +107,7 @@ if(isset($_POST['question'])){
 	</select><br/>
 	Input file : <input type="file" name="inputFile"/><br/>
 	<br/>
-	Assignment type : <select name="assignment">
-		<option>open</option>
-		<option>waiting</option>
-	</select>
-	 if "waiting", you can specify here parameters for an external assignment algorithm : <input type="text" name="extparams"/>
-	 <br/>
 	Question possible answers, separated by ";" :<br/>
 	<textarea name="answers" rows='4' cols='50'></textarea><br/>
-	Target number of contributions : <input type="text" name="target"/> Integer value, -1 for manual or external algorithm.<br/>
 	<input type="submit"/>
 </form>

@@ -1,10 +1,6 @@
 <h2>View and edit your profile</h2>
 
 <?php 
-//Connect to the database
-$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
-if(!$db)
-	exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 //================================================================================================================================
 //if the form has been submitted, treat the data
@@ -44,12 +40,9 @@ if(isset($_POST['regUN'])){
 
 		$sql->sql = $sql->sql.' WHERE id='.$_SESSION['userid'];
 		if($sql->ok){
-			$query = $db->query($sql->sql);
+			$query = $db->query($sql->sql) or dbErr();
 
-			if(!$query)
-				echo "Problem while updating your profile : ".$db->error;
-			else
-				echo 'Profile successfully updated !';
+			echo 'Profile successfully updated !';
 			echo "<br/>";
 		}
 	}
@@ -57,12 +50,7 @@ if(isset($_POST['regUN'])){
 
 //======================================================================================================================
 //Get the user info from the database
-$query = $db->query("SELECT * FROM ".$_SESSION['usermode']." WHERE id=".$_SESSION['userid']);
-if(!$query){
-	$err = $db->error;
-	$db->close();
-	exit('Database error : '.$err);
-}
+$query = $db->query("SELECT * FROM ".$_SESSION['usermode']." WHERE id=".$_SESSION['userid']) or dbErr();
 
 $user = $query->fetch_assoc();
 //Echo the form prefilled with the user data

@@ -11,6 +11,21 @@
 	if($mysql == NULL)
 		exit('Fatal error : the mysql configuration could not be decoded as json.');
 
+	//Connect to the database
+	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port)
+	or exit('Error while connecting to the database :<br/>'.$db->connect_error);
+
+	//function to exit after correctly destroying the mysql session
+	function error($message){
+		$db->close();
+		exit($message);
+	}
+	//function to exit any script in case of database error
+	function dbErr($db){
+		$err = $db->error;
+		error('Database error : '.$err);
+	}
+
 ?>
 
 <html>
@@ -36,6 +51,8 @@
 				include('register.php');
 			else
 				include 'login.php';
+
+		$db->close();
 		?>
 	</body>
 </html>

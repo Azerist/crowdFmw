@@ -8,31 +8,21 @@ if(isset($_SESSION['usermode']))
 //if the login form has already been submitted, check the entered login data
 if(isset($_POST['logtype'])){
 	
-	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
-	if(!$db)
-		exit('Error while connecting to the database :<br/>'.$db->connect_error);
-
-	$query = $db->query("SELECT id,password FROM ".$_POST['logtype']." WHERE username='".$_POST['login']."';");
-	if(!$query){
-		$err = $db->error;
-		$db->close();
-		exit('Database error : '.$err);
-	}
+	$query = $db->query("SELECT id,password FROM ".$_POST['logtype']." WHERE username='".$_POST['login']."';") or dbErr();
 
 	$result = $query->fetch_assoc();
 	if($result != NULL)
 		if(password_verify($_POST['pass'],$result['password'])){
 			$_SESSION['usermode'] = $_POST['logtype'];
 			$_SESSION['userid'] = $result['id'];
-			$db->close();
 			header('location: .?page=index');
+			$db->close();
 			exit();
 		}
 
 	?>
 	<p color='red'>Incorrect login information.</p>
 	<?php
-	$db->close();
 }
 
 //======================================================================================================================

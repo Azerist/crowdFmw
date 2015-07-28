@@ -4,7 +4,11 @@
 CREATE TABLE task (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	name varchar(32) NOT NULL,
-	description varchar(512)
+	description varchar(512),
+	status varchar(16),
+	extParams varchar(128),
+	target int,
+	current int DEFAULT 0
 );
 
 CREATE TABLE worker (
@@ -29,10 +33,7 @@ CREATE TABLE question (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	question varchar(256) NOT NULL,
 	input varchar(256),
-	inputType varchar(16),
-	status varchar(16),
-	extParams varchar(128),
-	target int
+	inputType varchar(16)
 );
 
 CREATE TABLE answer (
@@ -82,9 +83,9 @@ ADD(
 
 ALTER TABLE assignment
 ADD(
-	id_question int NOT NULL,
+	id_task int NOT NULL,
 	id_worker int NOT NULL,
-	FOREIGN KEY (id_question) REFERENCES question(id) ON DELETE CASCADE,
+	FOREIGN KEY (id_task) REFERENCES task(id) ON DELETE CASCADE,
 	FOREIGN KEY (id_worker) REFERENCES worker(id)
 );
 

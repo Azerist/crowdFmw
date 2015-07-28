@@ -33,6 +33,17 @@ if(isset($_POST['taskName'])){
 		echo 'Could not update data : '.$db->error.' <br/>';
 }
 
+//Check if the user owns this task
+$query = $db->query('SELECT id_requester FROM task WHERE id='.$_GET['id']);
+if(!$query){
+	$err = $db->error;
+	$db->close();
+	exit('Database error : '.$err);
+}
+$result = $query->fetch_assoc();
+if( $result == NULL || $result['id_requester'] != $_SESSION['userid'])
+	exit("Error : you don't own this task.");
+
 //Get task data from the database
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']);
 
@@ -52,6 +63,9 @@ $task = $query->fetch_assoc();
 <h2>Details of task  <?=$task['name']?></h2>
 <h3>task description :</h3>
 <p><?=$task['description']?></p>
+<p>Target number of contributions : <?=$task['target']?><br/>
+Current number of contributions : <?=$task['current']?></p>
+<hr/>
 <h3>Use this form to edit any of the above :</h3>
 <form method='post'>
 	Task name : <input type="text" name="taskName"/><br/>
@@ -76,8 +90,7 @@ if($query->num_rows !=0){
 			<tr>
 				<th>Question</th>
 				<th>Answers</th>
-				<th># of contrib.</th>
-				<th>Target # of contrib.</th>
+				<th>Get results</th>
 				<th>Delete</th>
 			</tr>
 		</thead>
@@ -103,10 +116,7 @@ if($query->num_rows !=0){
 					?>
 				</td>
 				<td>
-					<?php echo $db->query('SELECT count(*) FROM contribution WHERE id_answer='.$question['id'])->fetch_assoc()['count(*)'];?>
-				</td>
-				<td>
-					<?=$question['target']?>
+					<a href='?page=getResult&question=<?=$question['id']?>'>Results</a>
 				</td>
 				<td>
 					<a href='?page=deleteQuestion&id=<?=$question["id"]?>'>delete</a>
@@ -123,3 +133,5 @@ if($query->num_rows !=0){
 
 $db->close();
 ?>
+<a href='?page=index'>Go back to the index</a>
+<a href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>
