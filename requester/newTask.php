@@ -9,24 +9,31 @@ if(isset($_POST['taskName']))
 	//And if the user has specified a non-empty task name
 	else{
 		//Create the two parts of the sql query
-		$sql1 = "INSERT INTO task(name,id_requester,status,target,extParams";
-		$sql2 = "VALUES ('".str_replace('"',"'",$_POST['taskName'])."',$_SESSION[userid],$_POST[assignment],$_POST[target],$_POST[extparams]";
+		$sql1 = "INSERT INTO task(name,id_requester,status,target";
+		$sql2 = "VALUES ('".str_replace('"',"'",$_POST['taskName'])."',$_SESSION[userid],'$_POST[assignment]',$_POST[target]";
+
+		if($_POST['extparams'] != ''){
+			$sql1 = $sql1.',extparams';
+			$sql2 % $sql2.",'$_POST[extparams]'";
+		}
 
 		//if a description is provided, add it to the query
 		if($_POST['description'] != "" && $_POST['description'] != 'Task description'){
 			$sql1 = $sql1.',description';
-			$sql2 = $sql2.',"'.htmlentities($_POST['description']).'"';
+			$sql2 = $sql2.',"'.str_replace(array("\r\n","\r","\n"),'<br/>',$_POST['description']).'"';
 		}
 
 		//Complete the query and execute it
 		$sql1 = $sql1.')';
 		$sql2 = $sql2.')';
-		$query = $db->query($sql1.$sql2) or dbErr();
+
+		$query = $db->query($sql1.$sql2) or dbErr($db);
 		?>
 		<p>Task successfully inserted into database.</p>
 		<a href='?page=newQuestion'>Add a question</a><br/>
 		<a href='?page=listTasks'>See your tasks list</a><br/>
 		<a href='?page=index'>return to index</a>
+		<hr/>
 
 		<?php
 	}

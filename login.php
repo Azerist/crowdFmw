@@ -8,7 +8,7 @@ if(isset($_SESSION['usermode']))
 //if the login form has already been submitted, check the entered login data
 if(isset($_POST['logtype'])){
 	
-	$query = $db->query("SELECT id,password FROM ".$_POST['logtype']." WHERE username='".$_POST['login']."';") or dbErr();
+	$query = $db->query("SELECT id,password FROM ".$_POST['logtype']." WHERE username='".$_POST['login']."';") or dbErr($db);
 
 	$result = $query->fetch_assoc();
 	if($result != NULL)

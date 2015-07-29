@@ -4,7 +4,7 @@
 
 $query = $db->query('SELECT task.id, task.name, task.description FROM task,assignment 
 						WHERE task.id=assignment.id_task AND assignment.id_worker='.$_SESSION['userid'])
-		or dbErr();
+		or dbErr($db);
 
 if($query->num_rows != 0){
 	echo "<h3>tasks attributed to you :</h3><ul>";
@@ -18,7 +18,7 @@ $query = $db->query("SELECT id,name,description FROM task WHERE status='open'
 						AND id NOT IN (
 						SELECT id_task FROM contribution,question WHERE contribution.id_question=question.id AND id_worker=$_SESSION[userid]
 						)")
-		or dbErr();
+		or dbErr($db);
 
 if($query->num_rows != 0){
 	?>

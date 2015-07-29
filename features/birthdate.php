@@ -6,7 +6,7 @@ class birthdate{
 
 	public function initDb($mysql){ #Initialize the database column, takes mysql server information as a stdClass as argument.
 
-		$db = new mysqli($myslq->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
+		$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 		if(!$db)
 			exit('Database connection problem while initializing birthdate feature : '.$db->connect_error);
 

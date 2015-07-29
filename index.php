@@ -16,14 +16,14 @@
 	or exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 	//function to exit after correctly destroying the mysql session
-	function error($message){
+	function error($message,$db){
 		$db->close();
 		exit($message);
 	}
 	//function to exit any script in case of database error
 	function dbErr($db){
 		$err = $db->error;
-		error('Database error : '.$err);
+		error('Database error : '.$err,$db);
 	}
 
 ?>

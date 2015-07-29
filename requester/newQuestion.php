@@ -18,8 +18,8 @@ if(isset($_POST['question'])){
 
 		//Check if there exists a file with the same name, and rename it if necessary
 		$numb = 1;
-		while(file_exsts($file)){
-			$file = "questionFiles/$numb-$_FILES['inputFile']['name']";
+		while(file_exists($file)){
+			$file = "questionFiles/$numb-$_FILES[inputFile][name]";
 			$numb++;
 		}
 		
@@ -43,7 +43,7 @@ if(isset($_POST['question'])){
 						VALUES ('$question','$_POST[inputType]',$_POST[taskid],'$file')";
 
 			//execute it		
-			$query = $db->query($sql) or dbErr();
+			$query = $db->query($sql) or dbErr($db);
 		
 			//Treat the question answers
 			//explode the form string to get the separate answers
@@ -56,7 +56,7 @@ if(isset($_POST['question'])){
 			foreach ($answers as $ans) {
 				$ans = str_replace("'","''",$ans); //escape quotes
 				//insert it
-				$query = $db->query("INSERT INTO answer(answer,id_question) VALUES ('$ans',$id);") or dbErr();
+				$query = $db->query("INSERT INTO answer(answer,id_question) VALUES ('$ans',$id);") or dbErr($db);
 			}
 			?>
 			<p>Question successfully added</p>
@@ -75,10 +75,10 @@ if(isset($_POST['question'])){
 	<?php
 	//Take the list of the user's tasks from the db and generate a choice list in the form
 
-	$query = $db->query('SELECT id,name FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr();
+	$query = $db->query('SELECT id,name FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr($db);
 
 	if($query->num_rows == 0)
-		error('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>');
+		error('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>',$db);
 
 	echo "Choose the task linked to this question : <select name='taskid'>";
 	while($result = $query->fetch_assoc()){

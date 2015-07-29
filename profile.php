@@ -40,7 +40,7 @@ if(isset($_POST['regUN'])){
 
 		$sql->sql = $sql->sql.' WHERE id='.$_SESSION['userid'];
 		if($sql->ok){
-			$query = $db->query($sql->sql) or dbErr();
+			$query = $db->query($sql->sql) or dbErr($db);
 
 			echo 'Profile successfully updated !';
 			echo "<br/>";
@@ -50,7 +50,7 @@ if(isset($_POST['regUN'])){
 
 //======================================================================================================================
 //Get the user info from the database
-$query = $db->query("SELECT * FROM ".$_SESSION['usermode']." WHERE id=".$_SESSION['userid']) or dbErr();
+$query = $db->query("SELECT * FROM ".$_SESSION['usermode']." WHERE id=".$_SESSION['userid']) or dbErr($db);
 
 $user = $query->fetch_assoc();
 //Echo the form prefilled with the user data

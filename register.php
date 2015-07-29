@@ -42,7 +42,7 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 			$sql->sql1 = $sql->sql1.')';
 			$sql->sql2 = $sql->sql2.')';
 	
-			$query = $db->query($sql->sql1.$sql->sql2) or dbErr();
+			$query = $db->query($sql->sql1.$sql->sql2) or dbErr($db);
 			?>
 			<p>Account succesfully created !</p>
 			<a href='.?page=login'>Go back to the login page</a>

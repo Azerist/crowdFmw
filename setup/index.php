@@ -44,7 +44,7 @@
 
 					//Create a '.fmwName' file in the main folder to store the platform name.
 					if(!isset($_POST['name']))
-						error('Error while parsing the entered name. Please check the name you entered and try again.','init');
+						error('Error while parsing the entered name. Please check the name you entered and try again.','init',$db);
 
 					$file = fopen("../.fmwName", 'w');
 					if(!$file){
@@ -59,7 +59,7 @@
 				}
 
 				elseif (!file_exists('../.fmwName')) {
-					error('Could not find the file ".fmwName" in the main directory.','init');
+					error('Could not find the file ".fmwName" in the main directory.','init',$db);
 				}
 
 				
@@ -84,7 +84,7 @@
 			elseif($_GET['step'] == 'db2'){
 
 				if(!isset($_GET['mode']) || !in_array($_GET['mode'],array('auto','manual')))
-					error("the data sent by your browser is incorrect.",'db&fileExists=True');
+					error('the data sent by your browser is incorrect.",'db&fileExists=True',$db);
 
 				//Ask the user the required information to configure the database, based on the mode he chose.
 				if($_GET['mode'] == 'auto'){
@@ -125,7 +125,7 @@
 			elseif($_GET['step'] == 'db3'){
 
 				if(!isset($_GET["mode"]) || !in_array($_GET['mode'],array('auto','manual')) )
-					error('The data sent by your browser is incorrect.','db&fileExists=True');
+					error('The data sent by your browser is incorrect.','db&fileExists=True',$db);
 
 				//Create a file ".mysqlInfo" to store the mysql connection informations.
 				$file = fopen('../.mysqlInfo','w');
@@ -143,23 +143,23 @@
 				if($_GET['mode'] == 'auto'){
 
 					if($_POST['mysqlId'] == '' || $_POST['mysqlPw'] == '' || $_POST['dbName'] == '' || $_POST['mysqlPw'] != $_POST['mysqlPw2'])
-						error('The data you entered is incorrect.','db&fileExists=True');
+						error('The data you entered is incorrect.','db&fileExists=True',$db);
 
 					$db = new mysqli($_POST['address'],$_POST['adminId'],$_POST['adminPw'],NULL,$_POST['port']);
 					if(!$db)
-						error('Could not connect to mysql : <br/>'.$db->connect_errno.' '.$db->connect_error,'db&fileExists=True');
+						error('Could not connect to mysql : <br/>'.$db->connect_errno.' '.$db->connect_error,'db&fileExists=True',$db);
 
 					$query = $db->query('CREATE USER "'.$_POST['mysqlId'].'"@"localhost" IDENTIFIED BY "'.$_POST['mysqlPw'].'";');
 					if(!$query){
 						$db->close();
-						error('Could not create the mysql user. Retry, or create a user manually and use manual setup mode.','db&fileExists=True');
+						error('Could not create the mysql user. Retry, or create a user manually and use manual setup mode.','db&fileExists=True',$db);
 					}
 					$query = $db->query('CREATE USER "'.$_POST['mysqlId'].'"@"%" IDENTIFIED BY "'.$_POST['mysqlPw'].'";');
 					if(!$query){
 						$err = $db->error;
 						$db->query('DROP USER "'.$_POST['mysqlId'].'"@"localhost";');
 						$db->close();
-						error('Could not create the mysql user : '.$err.'<br/>Retry, or create a user manually and use manual setup mode.','db&fileExists=True');
+						error('Could not create the mysql user : '.$err.'<br/>Retry, or create a user manually and use manual setup mode.','db&fileExists=True',$db);
 					}
 
 
@@ -169,7 +169,7 @@
 						$db->query('DROP USER "'.$_POST['mysqlId'].'"@"localhost";');
 						$db->query('DROP USER "'.$_POST['mysqlId'].'"@"%";');
 						$db->close();
-						error('Could not create the database : '.$err.' <br/>Retry, or create a database manually and use manual setup mode.','db&fileExists=True');
+						error('Could not create the database : '.$err.' <br/>Retry, or create a database manually and use manual setup mode.','db&fileExists=True',$db);
 					}
 
 					$query = $db->query('GRANT ALL ON '.$_POST['dbName'].'.* TO "'.$_POST['mysqlId'].'"@"localhost" , "'.$_POST['mysqlId'].'"@"%";');
@@ -179,7 +179,7 @@
 						$db->query('DROP USER "'.$_POST['mysqlId'].'"@"%";');
 						$db->query('DROP DATABASE '.$_POST['dbName'].';');
 						$db->close();
-						error('Could not grant rights to the new user on the new database :'.$err.'<br/>Retry, or use manual setup mode.','db&fileExists=True');
+						error('Could not grant rights to the new user on the new database :'.$err.'<br/>Retry, or use manual setup mode.','db&fileExists=True',$db);
 					}
 
 					$db->close();
@@ -199,18 +199,18 @@
 				//Initialize the database
 				$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
 				if(!$db)
-					error("Could not connect to the mysql server using ".$mysql->user->id." ".$mysql->user->pass." as information.","db&fileExists=True");
+					error('Could not connect to the mysql server using ".$mysql->user->id." ".$mysql->user->pass." as information.","db&fileExists=True',$db);
 
 				$sql = file_get_contents("init_db.sql");
 				if(!$sql){
 					$db->close();
-					error('Could not find the file "init_db.sql"',"db2&mode=manual");
+					error('Could not find the file "init_db.sql"',"db2&mode=manual',$db);
 				}
 
 				$query = $db->multi_query($sql);
 				if(!$query){
 					$db->close();
-					error("Error while initalizing the database. Please check that 'init_db.sql' is correct.","db2&mode=manual");
+					error('Error while initalizing the database. Please check that 'init_db.sql' is correct.","db2&mode=manual',$db);
 				}
 
 				#Initialize the worker features

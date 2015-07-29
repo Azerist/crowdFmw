@@ -1,7 +1,7 @@
 <h2>assign a question to users</h2>
 <?php
 if(!isset($_GET['id']))
-	error('task id missing');
+	error('task id missing',$db);
 
 //===============================================================================================================================
 //if the form has been submitted, create the assignments
@@ -20,26 +20,26 @@ if(isset($_POST['submit'])){
 				exit($sql->err);
 		}	
 	}
-	$query = $db->query($sql->sql) or dbErr();
+	$query = $db->query($sql->sql) or dbErr($db);
 
 	$count = $db->affected_rows;
 
-	$query = $db->query("UPDATE task SET status='assigned' WHERE id=$_GET[id]") or dbErr();
+	$query = $db->query("UPDATE task SET status='assigned' WHERE id=$_GET[id]") or dbErr($db);
 	$db->close();
 	exit("Question successfully assigned to $count workers");
 }
 //===============================================================================================================================
 //if the form has not been submitted, check if the question is waiting for assignment…
-$query = $db->query('SELECT task.id_requester FROM task WHERE id='.$_GET['id']) or dbErr();
+$query = $db->query('SELECT task.id_requester FROM task WHERE id='.$_GET['id']) or dbErr($db);
 
 $result = $query->fetch_assoc();
 if($result == NULL || $result['id_requester'] != $_SESSION['userid'])
-	error('Error : You are not owner of this task !');
+	error('Error : You are not owner of this task !',$db);
 
-$query = $db->query("SELECT status FROM task WHERE id=$_GET[id]") or dbErr();
+$query = $db->query("SELECT status FROM task WHERE id=$_GET[id]") or dbErr($db);
 
 if($query->fetch_assoc()['status'] != 'waiting'){
-	error('this task is not waiting for assignment...');
+	error('this task is not waiting for assignment...',$db);
 }
 
 //…then generate the form

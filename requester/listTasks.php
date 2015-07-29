@@ -1,7 +1,7 @@
 <h2>List of your tasks</h2>
 <?php
 
-$query = $db->query('SELECT * FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr();
+$query = $db->query('SELECT * FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr($db);
 
 ?>
 <table border='1'>
@@ -10,6 +10,8 @@ $query = $db->query('SELECT * FROM task WHERE id_requester='.$_SESSION['userid']
 			<th>Task name</th>
 			<th>Task description</th>
 			<th>Task status</th>
+			<th>Contributions/target</th>
+			<th>Delete</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,7 +28,9 @@ $query = $db->query('SELECT * FROM task WHERE id_requester='.$_SESSION['userid']
 				else
 					echo $result['status'];
 				?>
-			</td> 
+			</td>
+			<td><?="$result[current]/$result[target]"?></td>
+			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td> 
 		</tr>
 		<?php
 		}
