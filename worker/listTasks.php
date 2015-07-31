@@ -9,7 +9,7 @@ $query = $db->query('SELECT task.id, task.name, task.description FROM task,assig
 if($query->num_rows != 0){
 	echo "<h3>tasks attributed to you :</h3><ul>";
 	while($result = $query->fetch_assoc())
-		echo "<li><a href='?page=viewtask&id=".$result['task.id']."'>".$result['task.task']."</a></li>";
+		echo "<li><a href='?page=viewTask&id=".$result['id']."'>".$result['name']."</a></li>";
 	echo('</ul>');
 }
 
@@ -23,7 +23,7 @@ $query = $db->query("SELECT id,name,description FROM task WHERE status='open'
 if($query->num_rows != 0){
 	?>
 	<h3>Open tasks :</h3>
-	<table>
+	<table border='1'>
 		<thead>
 			<tr>
 				<th>Task name</th>

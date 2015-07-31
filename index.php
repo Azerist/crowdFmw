@@ -36,7 +36,11 @@
 	<body>
 		<h1><?=$fmwName?></h1>
 		<?php
-		if(isset($_SESSION['usermode']))
+		if(isset($_SESSION['usermode'])){
+			?>
+			<a href='?page=profile'>Edit your profile</a>
+			<a href='?page=logout'>Logout</a>
+			<?php
 			if(isset($_GET['page']))
 				if(file_exists($_SESSION['usermode'].'/'.$_GET['page'].'.php'))
 					include $_SESSION['usermode'].'/'.$_GET['page'].'.php';
@@ -46,6 +50,7 @@
 					exit('The requested page does not exist, or is not accessible for the '.$_SESSION['usermode'].' user mode.');
 			else
 				include $_SESSION['usermode'].'/index.php';
+		}
 		else
 			if(isset($_GET['page']) && $_GET['page'] == 'register')
 				include('register.php');

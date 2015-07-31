@@ -1,4 +1,4 @@
-<h2>index admin</h2>
-
-<a href='?page=profile'>Edit your profile</a>
-<a href='?page=logout'>Logout</a>
+<h2>Requester indew</h2>
+<a href='?page=listTasks'>View tasks</a><br/>
+<a href='?page=listRequesters'>View requesters</a><br\>
+<a href='?page=newFeature'>Initialize a new worker profile feature</a>

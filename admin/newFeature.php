@@ -1,18 +1,29 @@
 <h2>Initialize a new feature</h2>
 <?php
 
-if(!isset($_GET['feature']))
-	exit('No feature name provided');
+if(isset($_POST['feature'])){
 
-if(!file_exists("features/$_GET[feature].php"))
-	exit("the file 'features/$_GET[feature].php' was not found.")
+	if(!include("features/$_POST[feature].php")
+		error("the file 'features/$_POST[feature].php' was not found.",$db);
 
-include "features/$_GET[feature].php";
+	$feat = new $_POST['feature']();
 
-$feat = new $_GET['feature']();
+	$feat->initDb($mysql);
 
-$feat->initDb($mysql);
+	?>
 
+	<p>Feature <?=$_POST['feature']?> correctly initialized.</p>
+
+	<?php
+}
 ?>
 
-<p>Feature <?=$_GET['feature']?> correctly initialized.</p>
+<p>To add a worker feature to the platform :<br/>
+- Create a new class in the 'features' directory, matching perfectly the template<br/>
+- Enter the filename below, without '.php'<br/>
+- The class name and the filename must be the same : for instance, the class 'birthdate' is in the 'birthdate.php' file.</p>
+
+<form action="" method="post" accept-charset="utf-8">
+	<input type="text" name="feature" placeholder="Class name"/>
+	<input type="submit"/>
+</form>

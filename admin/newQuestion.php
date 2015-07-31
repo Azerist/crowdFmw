@@ -74,10 +74,8 @@ if(isset($_POST['question'])){
 	<?php
 	//Take the list of the user's tasks from the db and generate a choice list in the form
 
-	$query = $db->query('SELECT id,name FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr($db);
+	$query = $db->query('SELECT id,name FROM task') or dbErr($db);
 
-	if($query->num_rows == 0)
-		error('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>',$db);
 
 	echo "Choose the task linked to this question : <select name='taskid'>";
 	while($result = $query->fetch_assoc()){

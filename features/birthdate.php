@@ -77,10 +77,10 @@ class birthdate{
 		$max = intval($form['maxAge']) * 365;
 
 		if($min != 0)
-			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)>=$min";
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)>=$min ";
 
 		if($max != 0)
-			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)<=$max";		
+			$sql->sql = $sql->sql."AND DATEDIFF(NOW(),birthdate)<=$max ";		
 
 		$sql->ok = TRUE;
 

@@ -3,7 +3,7 @@
 
 //Check if a task id is provided
 if(!isset($_GET['id']))
-	error('No task id provided !',$db)
+	error('No task id provided !',$db);
 
 //Get task information
 $query = $db->query("SELECT name,description FROM task WHERE id=$_GET[id]") or dbErr($db);
@@ -26,8 +26,11 @@ $task = $query->fetch_assoc();
 	while($question = $query->fetch_assoc()){
 		echo "<h3>$question[question]</h3>";
 		//if existing, display the input file
-		if(file_exists($question['input']) && include("inputTypes/$question[inputType].php"))
-			new $question['inputType']($question['input'])->display();
+		if(file_exists($question['input']) && include("inputTypes/$question[inputType].php")){
+			$type = new $question['inputType']($question['input']);
+			$type->display();
+			echo "<br/>";
+		}
 
 		//Get all the answers for the question
 		$query2 = $db->query("SELECT id,answer FROM answer WHERE id_question=$question[id]") or dbErr($db);
