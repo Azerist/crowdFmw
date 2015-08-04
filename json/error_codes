@@ -1,0 +1,11 @@
+Code 	Meaning														Help
+
+0		query successful											Everything went good.
+1		Unable to parse JSON into '.mysqlInfo' file.				Check the json syntax of the '.mysqlInfo' file.
+2		Unable to connect to mysql.									Check that the login information in the '.mysqlInfo' file is correct; check that the myql server is reachable.
+3		Invalid input data.											The data transmitted (GET or POST) is incorrect. See the error message for more details.
+4		Not logged in as a json user.								Go to <root>/json/login.php and provide a post object with 'id' and 'password' fields.
+5		iput data is not json or header is incorrect.				Check that the http request sends correct json, set the 'Content-Type' header to 'application/json'
+6		Unable to read the platform configuration files.			Check that the platform has been initialized, if not go to <root>/setup − Check that '.mysqlInfo' and '.fmwName' files are readable by the web server
+7		Error while executing a sql request.
+8		Already logged in as a json user.							You can use the json interface, and don't need to login anymore.

@@ -84,7 +84,7 @@
 			elseif($_GET['step'] == 'db2'){
 
 				if(!isset($_GET['mode']) || !in_array($_GET['mode'],array('auto','manual')))
-					error('the data sent by your browser is incorrect.",'db&fileExists=True',$db);
+					error('the data sent by your browser is incorrect.','db&fileExists=True',$db);
 
 				//Ask the user the required information to configure the database, based on the mode he chose.
 				if($_GET['mode'] == 'auto'){
@@ -204,13 +204,13 @@
 				$sql = file_get_contents("init_db.sql");
 				if(!$sql){
 					$db->close();
-					error('Could not find the file "init_db.sql"',"db2&mode=manual',$db);
+					error('Could not find the file "init_db.sql"',"db2&mode=manual",$db);
 				}
 
 				$query = $db->multi_query($sql);
 				if(!$query){
 					$db->close();
-					error('Error while initalizing the database. Please check that 'init_db.sql' is correct.","db2&mode=manual',$db);
+					error('Error while initalizing the database. Please check that 'init_db.sql' is correct.',"db2&mode=manual",$db);
 				}
 
 				#Initialize the worker features
