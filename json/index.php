@@ -1,4 +1,5 @@
 <?php
+	header('Content-Type:application/json; charset=UTF-8');
 	session_start();
 	//Read config files :
 	$fmwName = file_get_contents('../.fmwName');
@@ -33,10 +34,10 @@
 		error('Fatal error : the mysql configuration could not be decoded as json.',1,NULL);
 
 	//check headers and read json input
-	if($_GET['page']!='get' && (!$headers || $headers['Content-Type']!='application/json'))
+	if(!$headers || $headers['Content-Type']!='application/json')
 		error('This page requires a json POST input.',5,NULL);
-	elseif($_GET['page'] != 'get')
-		$input = json_decode(file_get_contents('php://input'));
+	
+	$input = json_decode(file_get_contents('php://input')) or error('Json query syntax incorrect',9,$db);
 
 	//Connect to the database
 	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port)
