@@ -1,0 +1,244 @@
+\documentclass[notitlepage]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{minted}
+\usepackage{float}
+\floatstyle{boxed} 
+\restylefloat{figure}
+
+\makeatletter
+\newcommand*{\toccontents}{\@starttoc{toc}}
+\makeatother
+
+\title{Crowdsourcing framework \\
+Json API documentation}
+
+\begin{document}
+\maketitle
+\toccontents
+
+\newpage
+
+\chapter{GET interface}
+This section will explain how to use the get json interface.
+The example figures will be constitued by the input code on the left, and the output given by the platform on the right.
+
+\section{Access the interface}
+To access the interface, you will have to send a POST request to : 
+\begin{quote}<framework root>/json/?page=get\end{quote}
+The POST data must content only json, and the request \emph{Content-type} header must be set to \emph{application:json}.
+
+\section{login}
+All json requests must contain a \emph{login} object to authenticate yourself as an administrator of the platform.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"login":{	
+		"id":"admin",
+		"password":"admin"
+	}
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+This input alone will return an error, as the script expects a request. It is, however, required to include it in any request.
+\end{minipage}
+\caption{Example of login code}
+\end{figure}
+
+\newpage
+\section{Make a request}
+The request is made in a \emph{request} object that contains at least a \emph{type} field.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"login":{	
+		"id":"admin",
+		"password":"admin"
+	},
+	"request":{
+		"type":"worker"
+	}
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+[
+    {
+        "id": "1",
+        "username": "worker",
+        "password": "$2y$10$IuB4WsobsGdGNCo1ia",
+        "birthdate": "1993-07-04"
+    },
+    {
+        "id": "2",
+        "username": "worker2",
+        "password": "$2y$10$p0U3pW52oWaFN4qESD",
+        "birthdate": "2000-05-04"
+    }
+]
+\end{minted}
+\end{minipage}
+\caption{Example minimal request}
+\end{figure}
+As shown on the example above, the return is an array of the matching data.
+
+\section{Specifying return fields}
+If you don't need all the return fields, you can use the following syntax to specify the ones you want :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"login":{	
+		"id":"admin",
+		"password":"admin"
+	},
+	"request":{
+		"type":"worker",
+		"fields":[
+			"id",
+			"username"
+		]
+	}
+}
+
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+[
+    {
+        "id": "1",
+        "username": "worker"
+    },
+    {
+        "id": "2",
+        "username": "worker2"
+    },
+    {
+        "id": "3",
+        "username": "worker3"
+    }
+]
+\end{minted}
+\end{minipage}
+\caption{Example request with return fields selection}
+\end{figure}
+
+\newpage
+\section{Filtering the results}
+The results can be filtered using the following syntax :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"login":{	
+		"id":"admin",
+		"password":"admin"
+	},
+	"request":{
+		"type":"worker",
+		"fields":[
+			"id",
+			"birthdate"
+		],
+		"filters":[
+			"DATEDIFF(NOW(),birthdate)>(20*365)"
+		]
+	}
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+[
+
+    {
+        "id": "1",
+        "birthdate": "1993-07-04"
+    },
+    {
+        "id": "3",
+        "birthdate": "1960-10-22"
+    }
+
+]
+\end{minted}
+\end{minipage}
+\caption{Example request with results filtering}
+\end{figure}
+\\
+The example above selects only the users whose age is greater than 20. The filters must be written with SQL syntax. There can be as many filters as needed. Fields selection and filters can be used together or separately.
+
+\newpage
+\section{sub-results}
+Some types (\emph{task}, \emph{questions} and \emph{contributions}) have sub-results. Fields selection and results filtering can be applied to these sub-results by adding sub-objects to the \emph{fields} or \emph{filters} objects as shown in the following example :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"login":{	
+		"id":"admin",
+		"password":"admin"
+	},
+	"request":{
+		"type":"task",
+		"fields":{
+			"0":"name",
+			"questions":{
+				"0":"question",
+				"answers":"false"
+			}
+		}
+	}
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+[
+    {
+        "id": "1",
+        "name": "test_task 1",
+        "questions": [
+            {
+                "id": "1",
+                "question": "How are you ?"
+            },
+            {
+                "id": "2",
+                "question": "is this picture 
+                		correctly displayed?"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "name": "assignTest",
+        "questions": [
+            {
+                "id": "3",
+                "question": "test"
+            }
+        ]
+    }
+]
+\end{minted}
+\end{minipage}
+\caption{Example request with results filtering}
+\end{figure}
+\\As shown, you can also use the \emph{"false"} string to ommit a sub-result. Please note that the \emph{answers} subtype only accepts \emph{"false"} as a fields selection, since it has to few fields for this feature to make sense. \\
+Finally, please note that the \emph{id} field will always be returned, since the framework needs it.
+\end{document}
