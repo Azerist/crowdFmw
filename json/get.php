@@ -162,4 +162,7 @@ if(isset($input->request->max_size)  && is_numeric($input->request->max_size) &&
 if(memory_get_usage() - $memory > $max)
 	error('Return size greater than specified maximum.',10,$db);
 
-echo json_encode($result,JSON_PRETTY_PRINT);
+$ans = new stdClass();
+$ans->code = 0;
+$ans->result = $result;
+echo json_encode($ans,JSON_PRETTY_PRINT);

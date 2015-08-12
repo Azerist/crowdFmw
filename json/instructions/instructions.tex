@@ -7,6 +7,7 @@
 \usepackage{float}
 \floatstyle{boxed} 
 \restylefloat{figure}
+\usepackage{color}
 
 \makeatletter
 \newcommand*{\toccontents}{\@starttoc{toc}}
@@ -46,12 +47,42 @@ All json requests must contain a \emph{login} object to authenticate yourself as
 \end{minted}
 \end{minipage}
 \begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+	"code": 9,
+	"message": "Json query syntax incorrect"
+}
+\end{minted}
 This input alone will return an error, as the script expects a request. It is, however, required to include it in any request.
 \end{minipage}
 \caption{Example of login code}
 \end{figure}
+You can notice here the structure of any return from the platform : a return code that is 0 if there was no error, a positive integer if there was one.
+\section{return codes table}
+\begin{tabular}{|p{0.035\linewidth}|p{0.3\linewidth}|p{0.62\linewidth}|}
+\hline
+\bf{code} & \bf{meaning} & \bf{help}\\
+\hline
+0 & query successful & Everything went good.\\
+\hline
+1 & Unable to parse JSON into '.mysqlInfo' file. & Check the json syntax of the '.mysqlInfo' file.\\
+\hline
+2 & Unable to connect to mysql. & Check that the login information in the '.mysqlInfo' file is correct; check that the myql server is reachable.\\
+\hline
+3 & Invalid input data. & The data transmitted (GET or POST) is incorrect. See the error message for more details.\\
+\hline
+5 & input data is not json or header is incorrect. & Check that the http request sends correct json, set the 'Content-Type' header to 'application/json'.\\
+\hline
+6 & Unable to read the platform configuration files. & Check that the platform has been initialized, if not go to <root>/setup - Check that '.mysqlInfo' and '.fmwName' files are readable by the web server.\\
+\hline
+7 & Error while executing a sql request.&\\
+\hline
+9 & Json request sytax incorrect.& The Json query received by the iterface was incorrect. Check its syntax and compare it with the example.\\
+\hline
+10 & Return size greater than specified maximum. & The query you made on the 'get' interface generated data heavier than the 'max\_size' specified (10 MB if not specified in the request). Try using better filters.\\
+\hline
+\end{tabular}
 
-\newpage
 \section{Make a request}
 The request is made in a \emph{request} object that contains at least a \emph{type} field.
 
@@ -92,6 +123,7 @@ The request is made in a \emph{request} object that contains at least a \emph{ty
 \end{figure}
 As shown on the example above, the return is an array of the matching data.
 
+\newpage
 \section{Specifying return fields}
 If you don't need all the return fields, you can use the following syntax to specify the ones you want :
 \begin{figure}[h]
@@ -135,7 +167,6 @@ If you don't need all the return fields, you can use the following syntax to spe
 \caption{Example request with return fields selection}
 \end{figure}
 
-\newpage
 \section{Filtering the results}
 The results can be filtered using the following syntax :
 \begin{figure}[h]
@@ -241,4 +272,160 @@ Some types (\emph{task}, \emph{questions} and \emph{contributions}) have sub-res
 \end{figure}
 \\As shown, you can also use the \emph{"false"} string to ommit a sub-result. Please note that the \emph{answers} subtype only accepts \emph{"false"} as a fields selection, since it has to few fields for this feature to make sense. \\
 Finally, please note that the \emph{id} field will always be returned, since the framework needs it.
+
+\chapter{SET interface}
+\section{\textcolor{red}{WARNING}}
+This interface allows to insert data directly in the database, so be careful with it. Inserting incorrect data can introduce bad bugs in the framework.
+\section{Access the interface and login}
+The SET interface can be accessed the same way as the GET interface :\\
+To access the interface, you will have to send a POST request to : 
+\begin{quote}<framework root>/json/?page=set\end{quote}
+The POST data must content only json, and the request \emph{Content-type} header must be set to \emph{application:json}.
+
+All json requests must contain a \emph{login} object to authenticate yourself as an administrator of the platform.
+
+\section{edit existing content}
+Inserting new content is simply done with the following syntax :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "login":{   
+        "id":"admin",
+        "password":"admin"
+    },
+    "request":{
+        "type":"worker",
+        "id":"1",
+        "username":"user10",
+        "password":"test"
+    }
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "code": 0,
+    "message": "Row edition OK"
+}
+\end{minted}
+\end{minipage}
+\caption{Example edition request}
+\end{figure}
+You need to specify the type and the id of the content to edit. Then just set all the fields you want to edit. Unspecified fields will simply remain unchanged.
+
+\newpage
+\section{Insert new contents}
+The following syntax is used to insert new rows into the database :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "login":{   
+        "id":"admin",
+        "password":"admin"
+    },
+    "request":{
+        "type":"worker",
+        "values":[
+            {
+                "username":"user20",
+                "password":"test",
+                "birthdate":"2010-10-10"
+            },
+            {
+                "username":"user21",
+                "password":"test"
+            }
+        ]
+    }
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "code": 0,
+    "message": "successfully inserted 2 rows."
+}
+\end{minted}
+\end{minipage}
+\caption{Example insertion request}
+\end{figure}
+\\
+\emph{Values} must be an unnamed array (defined with [ ] in JSON). \\
+The script uses the first object in \emph{values} to define the fields used in the sql query. This means that if all the objects to insert do not have the same lenght, the longest object should always be placed first :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "login":{   
+        "id":"admin",
+        "password":"admin"
+    },
+    "request":{
+        "type":"worker",
+        "values":[
+            {
+                "username":"user21",
+                "password":"test"
+            },
+            {
+                "username":"user20",
+                "password":"test",
+                "birthdate":"2010-10-10"
+            }
+        ]
+    }
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "code": 0,
+    "message": "successfully inserted 2 rows."
+}
+\end{minted}
+This request works, but the \emph{birthdate} field of \emph{user20} will be ignored by the script.
+\end{minipage}
+\caption{Example of a misformed insertion request}
+\end{figure}
+
+\chapter{DELETE interface}
+\section{\textcolor{red}{WARNING}}
+This interface deletes content directly from the database, so be careful about what you do with it. Please note that, due to the database's structure, deleting content of certain types will \emph{automatically} delete sub-contents linked to it. For instance, deleting a task will delete all its questions, but also the answers and contributions linked to these questions. Any deletion will be irrecoverable. 
+\section{Delete a row}
+Deleting content can be done using the following syntax :
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "login":{   
+        "id":"admin",
+        "password":"admin"
+    },
+    "delete":{
+        "type":"worker",
+        "id":5
+    }
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+\begin{minted}[tabsize=2]{json}
+{
+    "code": 0,
+    "message": "row successfully deleted"
+}
+\end{minted}
+\end{minipage}
+\caption{Example of a misformed insertion request}
+\end{figure}
+
 \end{document}

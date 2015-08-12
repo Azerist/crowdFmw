@@ -9,12 +9,11 @@
 	//function to exit after correctly destroying the mysql session
 	function error($message,$code,$db){
 		$error = new stdClass();
-		$error->error = new stdClass();
-		$error->error->code = $code;
-		$error->error->message = $message;
+		$error->code = $code;
+		$error->message = $message;
 		if($db != NULL)
 			$db->close();
-		exit(json_encode($error));
+		exit(json_encode($error,JSON_PRETTY_PRINT));
 	}
 	//function to exit any script in case of database error
 	function dbErr($db){
