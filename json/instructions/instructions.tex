@@ -399,6 +399,12 @@ This request works, but the \emph{birthdate} field of \emph{user20} will be igno
 \chapter{DELETE interface}
 \section{\textcolor{red}{WARNING}}
 This interface deletes content directly from the database, so be careful about what you do with it. Please note that, due to the database's structure, deleting content of certain types will \emph{automatically} delete sub-contents linked to it. For instance, deleting a task will delete all its questions, but also the answers and contributions linked to these questions. Any deletion will be irrecoverable. 
+\section{access the interface}
+The access is the same as before. You will have to send a POST request to : 
+\begin{quote}<framework root>/json/?page=delete\end{quote}
+The POST data must content only json, and the request \emph{Content-type} header must be set to \emph{application:json}.
+
+All json requests must contain a \emph{login} object to authenticate yourself as an administrator of the platform.
 \section{Delete a row}
 Deleting content can be done using the following syntax :
 \begin{figure}[h]
