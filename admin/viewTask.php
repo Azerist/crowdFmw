@@ -9,25 +9,40 @@ if(isset($_POST['taskName'])){
 	
 	$sql = 'UPDATE task SET ';
 
-	$name = FALSE;
+	$first = TRUE;
 	if($_POST['taskName'] != ''){
 		$sql = $sql.'name="'.$_POST['taskName'].'"';
-		$name = TRUE;
+		$first = FALSE;
 	}
 
 	if($_POST['description'] != '' && $_POST['description'] != "Task description"){
-		if($name)
+		if(!$first)
 			$sql = $sql.',';
 		$sql = $sql.'description="'.str_replace(array("\r\n","\r","\n"),'<br/>',$_POST['description']).'" ';
+		$first = FALSE;
 	}
+
+	if(!$first)
+		$sql = $sql.',';
+	$sql = $sql."status='$_POST[assignment]'";
+
+	if($_POST['extparams'] != '')
+		$sql = $sql.",extParams='$_POST[extparams]'";
+
+	if($_POST['target'] != '')
+		$sql = $sql.",target=$_POST[target]";
 	
-	$sql = $sql.'WHERE id='.$_GET['id'];
+	$sql = $sql.' WHERE id='.$_GET['id'];
 
-	$query = $db->query($sql);
-
-	if(!$query)
-		echo 'Could not update data : '.$db->error.' <br/>';
+	$query = $db->query($sql) or dbErr($db);
 }
+
+//Check if the user owns this task
+$query = $db->query('SELECT id_requester FROM task WHERE id='.$_GET['id']) or dbErr($db);
+
+$result = $query->fetch_assoc();
+if( $result == NULL || $result['id_requester'] != $_SESSION['userid'])
+	error("Error : you don't own this task.",$db);
 
 //Get task data from the database
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']) or dbErr($db);
@@ -50,6 +65,15 @@ Current number of contributions : <?=$task['current']?></p>
 <form method='post'>
 	Task name : <input type="text" name="taskName" value="<?=$task['name']?>"/><br/>
 	<textarea name="description" rows="5" cols="50"><?=str_replace('<br/>',"\r\n",$task['description'])?></textarea><br/>
+	Assignment type : <select name="assignment">
+		<option <?php if($task['status']=='open') echo 'selected';?>>open</option>
+		<option <?php if($task['status']=='waiting') echo 'selected';?>>waiting</option>
+		<option <?php if($task['status']=='completed') echo 'selected';?>>completed</option>
+	</select>
+	if "waiting", you can specify here parameters for an external assignment algorithm : 
+	<input type="text" name="extparams" maxlength="128" value="<?=$task['extParams']?>"/><br/>
+	Target number of contributions : <input type="text" name="target" value="<?=$task['target']?>"/> 
+	Integer value, -1 for manual or external algorithm.<br/>
 	<input type="submit"/>
 </form>
 
@@ -102,4 +126,5 @@ if($query->num_rows !=0){
 }
 
 ?>
+<a href='?page=index'>Go back to the index</a>
 <a href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>

@@ -3,7 +3,7 @@
 
 CREATE TABLE task (
 	id int PRIMARY KEY AUTO_INCREMENT,
-	name varchar(32) NOT NULL,
+	name varchar(64) NOT NULL,
 	description varchar(512),
 	status varchar(16),
 	extParams varchar(128),
@@ -14,19 +14,19 @@ CREATE TABLE task (
 CREATE TABLE worker (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	username varchar(16) NOT NULL UNIQUE,
-	password varchar(64) NOT NULL
+	password varchar(256) NOT NULL
 );
 
 CREATE TABLE requester (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	username varchar(16) NOT NULL UNIQUE,
-	password varchar(64) NOT NULL
+	password varchar(256) NOT NULL
 );
 
 CREATE TABLE admin (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	username varchar(16) NOT NULL UNIQUE,
-	password varchar(64) NOT NULL
+	password varchar(256) NOT NULL
 );
 
 CREATE TABLE question (

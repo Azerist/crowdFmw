@@ -1,14 +1,14 @@
 <h2>List of your tasks</h2>
 <?php
 
-$query = $db->query('SELECT * FROM task') or dbErr($db);
-
+$query = $db->query("SELECT * FROM task,requester WHERE id_requester=requester.id") or dbErr($db);
 ?>
 <table border='1'>
 	<thead>
 		<tr>
 			<th>Task name</th>
 			<th>Task description</th>
+			<th>requester</th>
 			<th>Task status</th>
 			<th>Contributions/target</th>
 			<th>Delete</th>
@@ -21,6 +21,7 @@ $query = $db->query('SELECT * FROM task') or dbErr($db);
 		<tr>
 			<td><a href='?page=viewTask&id=<?=$result['id']?>'><?=$result['name']?></a></td>
 			<td><?=$result['description']?></td>
+			<td><a href='?page=viewRequester&id=<?=$result['id_requester']?>'><?=$result['username']?></a></td>
 			<td>
 				<?php
 				if($result['status'] == 'waiting')

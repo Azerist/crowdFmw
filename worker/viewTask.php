@@ -32,7 +32,7 @@ $task = $query->fetch_assoc();
 			echo "<br/>";
 		}
 
-		//Get all the answers for the question
+		//Get all the possible answers for the question
 		$query2 = $db->query("SELECT id,answer FROM answer WHERE id_question=$question[id]") or dbErr($db);
 		//Display all the answers
 		while($answer = $query2->fetch_assoc())

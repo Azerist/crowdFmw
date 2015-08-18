@@ -39,7 +39,6 @@ $query = $db->query("SELECT * FROM answer WHERE id_question=$question[id]") or d
 		while($ans = $query->fetch_assoc()){
 			echo "<tr>\n<td>$ans[answer]</td>\n";
 			$query2 = $db->query("SELECT count(*) FROM contribution WHERE id_answer=$ans[id]") or dbErr($db);
-		
 			$number = $query2->fetch_assoc()['count(*)'];
 			$percent = $number / max($total,1) * 100; //max($total,1) is used to avoid division by zero in the case of $total=0
 			echo "<td>$number</td>\n<td>$percent %</td>\n</tr>";

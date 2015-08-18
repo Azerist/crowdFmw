@@ -1,19 +1,38 @@
 <h2>List of tasks waiting for your answer </h2>
 
 <?php
-
+//Get the tasks assigned to the user
 $query = $db->query('SELECT task.id, task.name, task.description FROM task,assignment 
 						WHERE task.id=assignment.id_task AND assignment.id_worker='.$_SESSION['userid'])
 		or dbErr($db);
 
 if($query->num_rows != 0){
-	echo "<h3>tasks attributed to you :</h3><ul>";
-	while($result = $query->fetch_assoc())
-		echo "<li><a href='?page=viewTask&id=".$result['id']."'>".$result['name']."</a></li>";
-	echo('</ul>');
+	?>
+	<h3>Tasks assigned to you :</h3>
+	<table border='1'>
+		<thead>
+			<tr>
+				<th>Task name</th>
+				<th>Task description</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+	while($result = $query->fetch_assoc()){
+		?>
+		<tr>
+			<td><a href='?page=viewTask&id=<?=$result['id']?>'><?=$result['name']?></a></td>
+			<td><?=$result['description']?></td>
+		</tr>
+		<?php
+	}
+	?>
+		</tbody>
+	</table>
+	<?php
 }
 
-//get available tasks where the user has already contributed.
+//get available tasks where the user has not already contributed.
 $query = $db->query("SELECT id,name,description FROM task WHERE status='open' 
 						AND id NOT IN (
 						SELECT id_task FROM contribution,question WHERE contribution.id_question=question.id AND id_worker=$_SESSION[userid]

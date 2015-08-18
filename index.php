@@ -39,6 +39,7 @@
 		if(isset($_SESSION['usermode'])){
 			?>
 			<a href='?page=profile'>Edit your profile</a>
+			<a href='?page=index'>Go back to index</a>
 			<a href='?page=logout'>Logout</a>
 			<?php
 			if(isset($_GET['page']))

@@ -57,7 +57,7 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 if(isset($_POST['regType'])){ 	//treat the data from the first form, and generate the adapted form for requesters or workers
 	?>
 	<form action=".?page=register" method="post" accept-charset="utf-8">
-		Chose a username : <input type="text" name="regUN"/><br/>
+		Chose a username : <input type="text" name="regUN" maxlength="16" /><br/>
 		Chose a password and confirm : <input type="password" name="pass"/> <input type="password" name="pass2"/><br/>
 		<?php
 		if($_POST['regType'] == 'worker'){

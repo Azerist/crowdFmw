@@ -16,6 +16,9 @@ if(isset($_POST['question'])){
 		else
 			$file = 'questionFiles/'.$_FILES['inputFile']['name'];
 
+		if(strlen($file) > 230)
+			error("please use file name shorter than 230 characters.",$db);
+
 		//Check if there exists a file with the same name, and rename it if necessary
 		$numb = 1;
 		while(file_exists($file)){
@@ -35,7 +38,8 @@ if(isset($_POST['question'])){
 					error('Fatal error : could not move the uploaded file.');
 
 			//escape the quote character to prevent sql syntax error
-			$question = str_replace("'","''",$_POST['question']);			
+			$question = str_replace("'","''",$_POST['question']);
+			$question = str_replace(array("\r\n","\r","\n"),'<br/>',$question);			
 			$file = str_replace("'","''",$file);
 
 			//prepare the query to insert the new question in the database
@@ -60,7 +64,7 @@ if(isset($_POST['question'])){
 			}
 			?>
 			<p>Question successfully added</p>
-			<a href=''>Add a new question</a>
+			<a href=''>Add a new question</a> <a href='?page=index'>return to the index</a>
 			<?php
 			$db->close();
 			exit();
@@ -74,12 +78,14 @@ if(isset($_POST['question'])){
 	<?php
 	//Take the list of the user's tasks from the db and generate a choice list in the form
 
-	$query = $db->query('SELECT id,name FROM task') or dbErr($db);
+	$query = $db->query("SELECT id,name FROM task WHERE id_requester=$_SESSION[userid]") or dbErr($db);
 
+	if($query->num_rows == 0)
+		error('No tasks linked to your account were found. <a href="?page=newTask">Create a task</a>',$db);
 
 	echo "Choose the task linked to this question : <select name='taskid'>";
 	while($result = $query->fetch_assoc()){
-		echo "<option value='".$result['id']."'";
+		echo "<option value='$result[id]'";
 		if(isset($_GET['task']) && $_GET['task'] == $result['id'])
 			echo ' selected';
 		echo ">".$result['name']."</option>";
@@ -87,7 +93,7 @@ if(isset($_POST['question'])){
 	?>
 	</select>
 	<br/>
-	Question : <textarea name="question" cols="50" rows="1"></textarea><br/>
+	Question : <textarea name="question" cols="50" rows="1" maxlenght='256'></textarea><br/>
 	<br/>
 	Input file type : <select name='inputType'><option selected>none</option>
 		<?php

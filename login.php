@@ -29,7 +29,7 @@ if(isset($_POST['logtype'])){
 //else, or if the data is incorrect, echo the login form
 ?>
 
-<form action=".?page=login" method="post" accept-charset="utf-8">
+<form action="" method="post" accept-charset="utf-8">
 	Login as : <select name="logtype"><option >worker</option><option>requester</option><option>admin</option></select><br/>
 	Username : <input type="text" name="login"/><br/>
 	password : <input type="password" name="pass"/><br/>

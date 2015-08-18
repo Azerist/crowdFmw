@@ -1,7 +1,7 @@
 <h2>List of your tasks</h2>
 <?php
 
-$query = $db->query('SELECT * FROM task WHERE id_requester='.$_SESSION['userid']) or dbErr($db);
+$query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") or dbErr($db);
 
 ?>
 <table border='1'>

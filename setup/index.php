@@ -70,10 +70,8 @@
 				<p>Please choose how you want to initialize the database :</p>
 				<form action="" method="get" accept-charset="utf-8">
 					<input type='hidden' name='step' value='db2'/>
-					<select name="mode">
-						<option value="auto">Automatic mode : requires the mysql admin password.</option>
-						<option value="manual">Manual mode : create a user yourself and use it here, or use an existing user</option>
-					</select>
+					<input type='radio' name='mode' value="auto"/>Automatic mode : requires the mysql admin password. Due to mysql server limitations, this will only work on local mysql servers.<br/>
+					<input type='radio' name='mode' value="manual"/>Manual mode : create a user yourself and use it here, or use an existing user.<br/>
 					<input type="submit"/>
 				</form>
 
@@ -92,12 +90,12 @@
 
 					<h2>Database setup : Automatic mode</h2>
 					<form action=".?step=db3&mode=auto" method="post" accept-charset="utf-8">
-						Mysql server address : <input type="text" name="address" value="localhost"/> Port : <input type="text" name="port" value="3306"/><br/>
+						<input type="hidden" name="address" value="localhost"/><input type="hidden" name="port" value="3306"/>
 						Mysql server admin account : <input type="text" name="adminId" value="root"/> <input type="password" name="adminPw"/><br/>
 						Create a mysql account for the platform : <input type="text" name="mysqlId" value="crowdFmw"/> Password : <input type="password" name="mysqlPw"/>Confirm : <input type="password" name="mysqlPw2"/><br/>
 						<font color='red'>WARNING : The username must not be already used on the mysql server. Use manual mode <a href='.?step=db&fileExists=True'>here</a> to use an existing user.</font><br/>
 						Choose a database name : <input type="text" name="dbName" value="crowdFmw"/><br/>
-						Please use a database name that does not already exist on the mysql server.
+						Please use a database name that does not already exist on the mysql server.<br/>
 						<input type="submit"/>
 						<a href='.?step=db&fileExists=True'>Return</a>
 					</form>
@@ -210,7 +208,7 @@
 				$query = $db->multi_query($sql);
 				if(!$query){
 					$db->close();
-					error('Error while initalizing the database. Please check that 'init_db.sql' is correct.',"db2&mode=manual",$db);
+					error('Error while initalizing the database. Please check that "init_db.sql" is correct.',"db2&mode=manual",$db);
 				}
 
 				#Initialize the worker features
