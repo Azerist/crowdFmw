@@ -1,7 +1,7 @@
 <h2>List of your tasks</h2>
 <?php
 
-$query = $db->query("SELECT * FROM task,requester WHERE id_requester=requester.id") or dbErr($db);
+$query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.id") or dbErr($db);
 ?>
 <table border='1'>
 	<thead>
