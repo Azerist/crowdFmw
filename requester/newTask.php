@@ -8,9 +8,21 @@ if(isset($_POST['taskName']))
 
 	//And if the user has specified a non-empty task name, and the target number is correct
 	else{
+
+		//Check if the requester's balance is enough to use the selected reward
+		//Get the current balance
+		$query = $db->query("SELECT balance FROM requester WHERE id=$_SESSION[userid]") or dbErr($db);
+		$balance = $query->fetch_assoc()['balance'];
+		//Compute the total cost of the requester's other tasks
+		$query = $db->query("SELECT SUM((target-current)*reward) AS total FROM task WHERE id_requester=$_SESSION[userid] AND status!='completed'") or dbErr($db);
+		$total = $query->fetch_assoc()['total'] ;
+		$cost = $_POST['target']*$_POST['reward'];
+		if($total + $cost > $balance)
+			error("Insuficient balance : Your balance is $balance, this task costs $cost, and your other unfinished tasks cost $total",$db);
+			
 		//Create the two parts of the sql query
-		$sql1 = "INSERT INTO task(name,id_requester,status,target";
-		$sql2 = "VALUES ('".str_replace("'","''",$_POST['taskName'])."',$_SESSION[userid],'$_POST[assignment]',$_POST[target]";
+		$sql1 = "INSERT INTO task(name,id_requester,status,target,reward";
+		$sql2 = "VALUES ('".str_replace("'","''",$_POST['taskName'])."',$_SESSION[userid],'$_POST[assignment]',$_POST[target],$_POST[reward]";
 
 		if($_POST['status'] == 'waiting' && $_POST['extparams'] != ''){
 			$sql1 = $sql1.',extparams';
@@ -38,8 +50,10 @@ if(isset($_POST['taskName']))
 		<?php
 	}
 //if not, display the form
+$query = $db->query("SELECT balance FROM requester WHERE id=$_SESSION[userid]") or dbErr($db);
+$balance = $query->fetch_assoc()['balance'];
 ?>
-<form method='post'>
+<form method='post' onkeyup="addVal(this)">
 	Task name : <input type="text" name="taskName" maxlength="64" /><br/>
 	<textarea name="description" rows="5" cols="50" maxlenght="512">Task description</textarea><hr/>
 	Assignment type : <select name="assignment">
@@ -48,5 +62,32 @@ if(isset($_POST['taskName']))
 	</select>
 	if "waiting", you can specify here parameters for an external assignment algorithm : <input type="text" name="extparams" maxlength="128" /><br/>
 	Target number of contributions : <input type="text" name="target"/> Integer value, -1 for manual or external algorithm.<br/>
-	<input type="submit"/>
+	Individual reward for this task : <input type="text" name="reward"/>
+	Total cost : <b id='total'>0</b> — Current balance : <b id='balance'><?=$balance?></b><br/>
+	<input type="submit" name='submit'/>
 </form>
+<script>
+	function addVal(form){
+		submit = form.children[name='submit'];
+		inputTarget = form.children[name='target'];
+		inputReward = form.children[name='reward'];
+		target = Number(inputTarget.value);
+		reward = Number(inputReward.value);
+		if(isNaN(reward)){
+			document.getElementById('total').innerHTML = 0.00;
+			inputReward.style.color = 'red';
+			submit.disabled = true;
+		}
+		else if(isNaN(target)){
+			document.getElementById('total').innerHTML = 0.00;
+			inputTarget.style.color = 'red';
+			submit.disabled = true;
+		}
+		else{
+			document.getElementById('total').innerHTML = (target * reward).toFixed(2);
+			inputTarget.style.color = '';
+			inputReward.style.color = '';
+			submit.disabled = false;
+		}
+	}
+</script>

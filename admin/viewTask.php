@@ -6,7 +6,7 @@ if(!isset($_GET['id']))
 
 //If the form has been submitted, update the database
 if(isset($_POST['taskName'])){
-	
+
 	$sql = 'UPDATE task SET ';
 
 	$first = TRUE;
@@ -31,18 +31,15 @@ if(isset($_POST['taskName'])){
 
 	if($_POST['target'] != '')
 		$sql = $sql.",target=$_POST[target]";
-	
+
+	if($_POST['reward'] !='')
+		$sql = $sql.",reward=$_POST[reward];
+
 	$sql = $sql.' WHERE id='.$_GET['id'];
 
 	$query = $db->query($sql) or dbErr($db);
 }
 
-//Check if the user owns this task
-$query = $db->query('SELECT id_requester FROM task WHERE id='.$_GET['id']) or dbErr($db);
-
-$result = $query->fetch_assoc();
-if( $result == NULL || $result['id_requester'] != $_SESSION['userid'])
-	error("Error : you don't own this task.",$db);
 
 //Get task data from the database
 $query = $db->query('SELECT * FROM task WHERE id ='.$_GET['id']) or dbErr($db);
@@ -70,10 +67,11 @@ Current number of contributions : <?=$task['current']?></p>
 		<option <?php if($task['status']=='waiting') echo 'selected';?>>waiting</option>
 		<option <?php if($task['status']=='completed') echo 'selected';?>>completed</option>
 	</select>
-	if "waiting", you can specify here parameters for an external assignment algorithm : 
+	if "waiting", you can specify here parameters for an external assignment algorithm :
 	<input type="text" name="extparams" maxlength="128" value="<?=$task['extParams']?>"/><br/>
-	Target number of contributions : <input type="text" name="target" value="<?=$task['target']?>"/> 
+	Target number of contributions : <input type="text" name="target" value="<?=$task['target']?>"/>
 	Integer value, -1 for manual or external algorithm.<br/>
+	Reward : <input type='text' name='reward' placeholder="numeric value" value='<?=$task['reward']?>'/><br/>
 	<input type="submit"/>
 </form>
 
@@ -116,7 +114,7 @@ if($query->num_rows !=0){
 					<a href='?page=deleteQuestion&id=<?=$question["id"]?>'>delete</a>
 				</td>
 			</tr>
-		
+
 		<?php
 		}
 		?>

@@ -11,6 +11,7 @@ $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") o
 			<th>Task description</th>
 			<th>Task status</th>
 			<th>Contributions/target</th>
+			<th>Reward</th>
 			<th>Delete</th>
 		</tr>
 	</thead>
@@ -30,7 +31,8 @@ $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") o
 				?>
 			</td>
 			<td><?="$result[current]/$result[target]"?></td>
-			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td> 
+			<td><?=$task['reward']?></td>
+			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td>
 		</tr>
 		<?php
 		}

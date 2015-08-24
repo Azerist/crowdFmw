@@ -8,19 +8,22 @@ CREATE TABLE task (
 	status varchar(16),
 	extParams varchar(128),
 	target int,
-	current int DEFAULT 0
+	current int DEFAULT 0,
+	reward float(5,2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE worker (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	username varchar(16) NOT NULL UNIQUE,
-	password varchar(256) NOT NULL
+	password varchar(256) NOT NULL,
+	balance FLOAT(6,2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE requester (
 	id int PRIMARY KEY AUTO_INCREMENT,
 	username varchar(16) NOT NULL UNIQUE,
-	password varchar(256) NOT NULL
+	password varchar(256) NOT NULL,
+	balance FLOAT(6,2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE admin (

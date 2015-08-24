@@ -1,5 +1,5 @@
 <h2>contribute</h2>
-<?php 
+<?php
 
 //if the required data is not provided, exit the script
 if(!isset($_GET['task']))
@@ -43,6 +43,11 @@ $db->query("UPDATE task SET current=current+1 WHERE id=$_GET[task]");
 
 //Change the task state to "completed" if the target number of contributions is reached
 $db->query("UPDATE task SET status='completed' WHERE id=$_GET[task] AND current>=target");
+
+//Transfer the reward from the requester to the Worker
+	$db->query("UPDATE worker,task SET balance=balance+reward WHERE task.id=$_GET[task] AND worker.id=$userid") or dbErr($db);
+	$db->query("UPDATE requester,task SET balance=balance-reward WHERE task.id=$_GET[task] AND requester.id=task.id_requester") or dbErr($db);
+
 
 ?>
 <p>Contribution successfully registered.</p>

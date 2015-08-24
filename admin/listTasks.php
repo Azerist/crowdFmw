@@ -11,6 +11,7 @@ $query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.i
 			<th>requester</th>
 			<th>Task status</th>
 			<th>Contributions/target</th>
+			<th>reward</th>
 			<th>Delete</th>
 		</tr>
 	</thead>
@@ -31,7 +32,8 @@ $query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.i
 				?>
 			</td>
 			<td><?="$result[current]/$result[target]"?></td>
-			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td> 
+			<td><?=$result['reward']?></td>
+			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td>
 		</tr>
 		<?php
 		}

@@ -12,8 +12,9 @@
 		exit('Fatal error : the mysql configuration could not be decoded as json.');
 
 	//Connect to the database
-	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port)
-	or exit('Error while connecting to the database :<br/>'.$db->connect_error);
+	$db = new mysqli($mysql->server->address,$mysql->user->id,$mysql->user->pass,$mysql->db,$mysql->server->port);
+	if($db->connect_error)
+		exit('Error while connecting to the database :<br/>'.$db->connect_error);
 
 	//function to exit after correctly destroying the mysql session
 	function error($message,$db){

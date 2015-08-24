@@ -91,8 +91,8 @@
 					<h2>Database setup : Automatic mode</h2>
 					<form action=".?step=db3&mode=auto" method="post" accept-charset="utf-8">
 						<input type="hidden" name="address" value="localhost"/><input type="hidden" name="port" value="3306"/>
-						Mysql server admin account : <input type="text" name="adminId" value="root"/> <input type="password" name="adminPw"/><br/>
-						Create a mysql account for the platform : <input type="text" name="mysqlId" value="crowdFmw"/> Password : <input type="password" name="mysqlPw"/>Confirm : <input type="password" name="mysqlPw2"/><br/>
+						Mysql server admin account : <input type="text" name="adminId" value="root" placeholder='login'/> <input type="password" name="adminPw" placeholder='password'/><br/>
+						Create a mysql account for the platform : <input type="text" name="mysqlId" value="crowdFmw" placeholder='login'/> <input type="password" name="mysqlPw" placeholder='password'/> <input type="password" name="mysqlPw2" placeholder='confirm password'/><br/>
 						<font color='red'>WARNING : The username must not be already used on the mysql server. Use manual mode <a href='.?step=db&fileExists=True'>here</a> to use an existing user.</font><br/>
 						Choose a database name : <input type="text" name="dbName" value="crowdFmw"/><br/>
 						Please use a database name that does not already exist on the mysql server.<br/>
@@ -108,7 +108,7 @@
 					<h2>Database setup : Manual mode</h2>
 					<form action=".?step=db3&mode=manual" method="post" accept-charset="utf-8">
 						Mysql server address : <input type="text" name="address" value="localhost"/> Port : <input type="text" name="port" value="3306"/><br/>
-						Mysql account to use : <input type="text" name="mysqlId"/> <input type="password" name="mysqlPw"/><br/>
+						Mysql account to use : <input type="text" name="mysqlId" placeholder='login'/> <input type="password" placeholder='password' name="mysqlPw"/><br/>
 						Database to use : <input type="text" name="dbName"/><br/>
 						The user and the database must exist on the specified server. Moreover, the specified user must have all rights on the specified database.<br/>
 						<input type="submit"/><br/>
@@ -144,7 +144,7 @@
 						error('The data you entered is incorrect.','db&fileExists=True',$db);
 
 					$db = new mysqli($_POST['address'],$_POST['adminId'],$_POST['adminPw'],NULL,$_POST['port']);
-					if(!$db)
+					if($db->connect_error)
 						error('Could not connect to mysql : <br/>'.$db->connect_errno.' '.$db->connect_error,'db&fileExists=True',$db);
 
 					$query = $db->query('CREATE USER "'.$_POST['mysqlId'].'"@"localhost" IDENTIFIED BY "'.$_POST['mysqlPw'].'";');
@@ -205,10 +205,20 @@
 					error('Could not find the file "init_db.sql"',"db2&mode=manual",$db);
 				}
 
-				$query = $db->multi_query($sql);
-				if(!$query){
+				if ($db->multi_query($sql)) {
+				  while ($db->more_results()) {
+				  	$next = $db->next_result();
+				    if (!$next) {
+				      $err = $db->error;
+				      $db->close();
+				      error("Error while initalizing the database : $err <br/> Please check that 'init_db.sql' is correct.","db2&mode=manual",$db);
+				    }
+				  }
+				}
+				else{
+					$err = $db->error;
 					$db->close();
-					error('Error while initalizing the database. Please check that "init_db.sql" is correct.',"db2&mode=manual",$db);
+					error("Error while initalizing the database : $err <br/> Please check that 'init_db.sql' is correct.","db2&mode=manual",$db);
 				}
 
 				#Initialize the worker features
