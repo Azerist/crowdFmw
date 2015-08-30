@@ -8,7 +8,7 @@ if(!isset($_GET['id']))
 
 //If the user is 'sure', delete the task
 if(isset($_POST['sure']) && $_POST['sure'] == 'yes'){
-	
+
 	//Delete the input files linked to this task's questions; the questions will be automatically deleted from database thanks to 'ON DELETE CASCADE' option.
 	$query = $db->query("SELECT input FROM question WHERE id_task=$_GET[id]") or dbErr($db);
 
@@ -20,7 +20,7 @@ if(isset($_POST['sure']) && $_POST['sure'] == 'yes'){
 
 	//Delete the task
 	$query = $db->query("DELETE FROM task WHERE id=$_GET[id]") or dbErr($db);
-	
+
 	$db->close();
 	exit('Task correctly deleted.<br/><a href="?page=index">Go back to the index.</a>');
 }
@@ -37,7 +37,7 @@ if($count != 0)
 
 <form method='post'>
 	Confirm that you want to delete this task :<br/>
-	<input type="radio" name="sure" value='yes'/>Yes<br/>
-	<input type="radio" name="sure" value='no' checked/>No<br/>
+	<input type="radio" class="radio" name="sure" value='yes'>Yes</input><br/>
+	<input type="radio" class="radio" name="sure" value='no' checked>No</input><br/>
 	<input type="submit"/>
 </form>

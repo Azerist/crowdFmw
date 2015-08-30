@@ -1,17 +1,17 @@
 <Files .fmwName>
 	Order Allow,Deny
 	Deny from all
-</Files> 
+</Files>
 
 <Files .gitignore>
 	Order Allow,Deny
 	Deny from all
-</Files> 
+</Files>
 
 <Files .mysqlInfo>
 	Order Allow,Deny
 	Deny from all
-</Files> 
+</Files>
 
 <Files login.php>
 	Order Allow,Deny
@@ -21,14 +21,14 @@
 <Files logout.php>
 	Order Allow,Deny
 	Deny from all
-</Files>  
+</Files>
 
 <Files profile.php>
 	Order Allow,Deny
 	Deny from all
-</Files> 
+</Files>
 
 <Files register.php>
 	Order Allow,Deny
 	Deny from all
-</Files> 
+</Files>

@@ -9,4 +9,4 @@ if (isset($_SESSION))
 ?>
 <h2>Logout</h2>
 <p>Correctly logged out.</p>
-<a href='.?page=login'>Log in on another session</a>
+<a class="button" href='.?page=login'>Log in on another session</a>

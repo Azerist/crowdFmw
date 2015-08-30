@@ -4,7 +4,8 @@
 $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") or dbErr($db);
 
 ?>
-<table border='1'>
+<p>
+<table>
 	<thead>
 		<tr>
 			<th>Task name</th>
@@ -39,3 +40,4 @@ $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") o
 		?>
 	</tbody>
 </table>
+</p>

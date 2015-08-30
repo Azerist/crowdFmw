@@ -6,10 +6,10 @@ if(isset($_POST['question'])){
 	if($_POST['question'] == '' || $_POST['answers'] == '')//If essential data is missing
 		echo 'please fill the form !';
 	else{
-		//Load the inputType class 
+		//Load the inputType class
 		if(!include("inputTypes/$_POST[inputType].php"))
 			exit("FATAL ERROR : could not find file 'inputTypes/$_POST[inputType].php'");
-		
+
 		//if the inputType is null, use an empty file name
 		if($_POST['inputType'] == 'none')
 			$file = '';
@@ -25,7 +25,7 @@ if(isset($_POST['question'])){
 			$file = "questionFiles/$numb-$_FILES[inputFile][name]";
 			$numb++;
 		}
-		
+
 		//create an instance of the inputType class
 		$type = new $_POST['inputType']($file);
 
@@ -39,16 +39,16 @@ if(isset($_POST['question'])){
 
 			//escape the quote character to prevent sql syntax error
 			$question = str_replace("'","''",$_POST['question']);
-			$question = str_replace(array("\r\n","\r","\n"),'<br/>',$question);			
+			$question = str_replace(array("\r\n","\r","\n"),'<br/>',$question);
 			$file = str_replace("'","''",$file);
 
 			//prepare the query to insert the new question in the database
 			$sql = "INSERT INTO question(question,inputType,id_task,input)
 						VALUES ('$question','$_POST[inputType]',$_POST[taskid],'$file')";
 
-			//execute it		
+			//execute it
 			$query = $db->query($sql) or dbErr($db);
-		
+
 			//Treat the question answers
 			//explode the form string to get the separate answers
 			$answers = explode(';',str_replace(array('\r','\n'),'',$_POST['answers']));
@@ -92,9 +92,9 @@ if(isset($_POST['question'])){
 	}
 	?>
 	</select>
-	<br/>
+	<hr/>
 	Question : <textarea name="question" cols="50" rows="1" maxlenght='256'></textarea><br/>
-	<br/>
+	<hr/>
 	Input file type : <select name='inputType'><option selected>none</option>
 		<?php
 			//generate a choice list with the available inputTypes
@@ -104,12 +104,12 @@ if(isset($_POST['question'])){
 					$class = str_replace('.php', '', $filename);
 					if($class != "none")
 						echo '<option>'.$class.'</option>';
-				}	
+				}
 			}
 		?>
 	</select><br/>
 	Input file : <input type="file" name="inputFile"/><br/>
-	<br/>
+	<hr/>
 	Question possible answers, separated by ";" :<br/>
 	<textarea name="answers" rows='4' cols='50'></textarea><br/>
 	<input type="submit"/>

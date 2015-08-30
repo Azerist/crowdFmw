@@ -4,9 +4,9 @@
 
 $query = $db->query("SELECT username,id FROM requester") or dbErr($db);
 
-echo  "<ul>\n";
+echo  "<div class='content'><ul>\n";
 
 while($requester = $query->fetch_assoc())
 	echo "<li><a href='?page=viewRequester&id=$requester[id]'>$requester[username]</a></li>\n";
 
-echo "</ul>\n";
+echo "</ul></div>\n";

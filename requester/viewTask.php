@@ -52,7 +52,7 @@ if(isset($_POST['taskName'])){
 		$cost = $target*$_POST['reward'];
 		if($total + $cost > $balance)
 			error("Insuficient balance : Your balance is $balance, this task costs $cost, and your other unfinished tasks cost $total",$db);
-		$sql = $sql.",reward=$_POST[reward];
+		$sql = $sql.",reward=$_POST[reward]";
 	}
 
 
@@ -74,11 +74,10 @@ $task = $query->fetch_assoc();
 //Display task information
 ?>
 <h2>Details of task  <?=$task['name']?></h2>
-<h3>task description :</h3>
-<p><?=$task['description']?></p>
+
+<p><b>task description :</b><?=$task['description']?></p>
 <p>Target number of contributions : <?=$task['target']?><br/>
 Current number of contributions : <?=$task['current']?></p>
-<hr/>
 <h3>Use this form to edit any of the above :</h3>
 <form method='post'>
 	Task name : <input type="text" name="taskName" value="<?=$task['name']?>"/><br/>
@@ -93,7 +92,7 @@ Current number of contributions : <?=$task['current']?></p>
 	Target number of contributions : <input type="text" name="target" value="<?=$task['target']?>"/>
 	Integer value, -1 for manual or external algorithm.<br/>
 	Reward : <input type='text' name='reward' placeholder="numeric value" value='<?=$task['reward']?>'/><br/>
-	<input type="submit"/>
+	<input type="submit"/><input type='reset'/>
 </form>
 
 <?php
@@ -103,7 +102,8 @@ $query = $db->query('SELECT * FROM question WHERE id_task='.$task['id']) or dbEr
 if($query->num_rows !=0){
 	?>
 	<h3>Questions linked to this task:</h3>
-	<table border='1'>
+	<p>
+	<table>
 		<thead>
 			<tr>
 				<th>Question</th>
@@ -141,9 +141,9 @@ if($query->num_rows !=0){
 		?>
 		</tbody>
 	</table>
+</p>
 	<?php
 }
 
 ?>
-<a href='?page=index'>Go back to the index</a>
-<a href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>
+<a class="button" href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>

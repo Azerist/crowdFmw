@@ -3,7 +3,8 @@
 
 $query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.id") or dbErr($db);
 ?>
-<table border='1'>
+<p>
+<table>
 	<thead>
 		<tr>
 			<th>Task name</th>
@@ -26,7 +27,7 @@ $query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.i
 			<td>
 				<?php
 				if($result['status'] == 'waiting')
-					echo "<a href='?page=assign&id=$result[id]' title='assign task'>waiting</a>";
+					echo "<a   href='?page=assign&id=$result[id]' title='assign task'>waiting</a>";
 				else
 					echo $result['status'];
 				?>
@@ -40,3 +41,4 @@ $query = $db->query("SELECT * FROM requester,task WHERE id_requester=requester.i
 		?>
 	</tbody>
 </table>
+</p>
