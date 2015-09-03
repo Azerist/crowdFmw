@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
 			$feat->getAssignmentForm($_POST,$sql);
 			if(!$sql->ok)
 				error($sql->err,$db);
-		}	
+		}
 	}
 	$query = $db->query($sql->sql) or dbErr($db);
 
@@ -26,7 +26,7 @@ if(isset($_POST['submit'])){
 	if($count>0)
 		$query = $db->query("UPDATE task SET status='assigned' WHERE id=$_GET[id]") or dbErr($db);
 	$db->close();
-	exit("Question successfully assigned to $count workers");
+	exit("<p>Question successfully assigned to $count workers</p>");
 }
 //===============================================================================================================================
 //if the form has not been submitted, check if the question is waiting for assignment…
@@ -42,8 +42,8 @@ if($result['status'] != 'waiting'){
 
 //…then generate the form
 ?>
+<h3>Filter criteria availables :</h3>
 <form method="post">
-	<h3>Filter criteria availables :</h3>
 	<table border='1'>
 		<thead>
 			<tr>
@@ -65,7 +65,7 @@ if($result['status'] != 'waiting'){
 					<td><?=$feat->assignmentForm()?></td>
 				</tr>
 				<?php
-			}	
+			}
 		}
 		?>
 		</tbody>

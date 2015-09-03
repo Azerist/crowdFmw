@@ -15,7 +15,7 @@ if(($result = $query->fetch_assoc()) == NULL || $result['id_requester'] != $_SES
 
 //If the user is 'sure', delete the task
 if(isset($_POST['sure']) && $_POST['sure'] == 'yes'){
-	
+
 	//Delete the input files linked to this task's questions; the questions will be automatically deleted from database thanks to 'ON DELETE CASCADE' option.
 	$query = $db->query("SELECT input FROM question WHERE id_task=$_GET[id]") or dbErr($db);
 
@@ -27,9 +27,9 @@ if(isset($_POST['sure']) && $_POST['sure'] == 'yes'){
 
 	//Delete the task
 	$query = $db->query("DELETE FROM task WHERE id=$_GET[id]") or dbErr($db);
-	
+
 	$db->close();
-	exit('Task correctly deleted.<br/><a href="?page=index">Go back to the index.</a>');
+	exit('<p>Task correctly deleted.</p><a class="button" href="?page=index">Go back to the index.</a>');
 }
 
 //Warn the user if this task already has contributions

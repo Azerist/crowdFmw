@@ -66,7 +66,7 @@
 					<a href='?page=index'><i class="fa fa-home"></i> Index</a>
 					<a href='javascript:void(0)' onclick="Menu('usermenu')" class="userlink"><i class="fa fa-user"></i>&nbsp<?=$_SESSION['username']?></a>
 			</div>
-			
+
 			<div id="usermenu">
 				<a href='?page=profile'><i class="fa fa-cog"></i>&nbspView and edit your profile</a>
 				<a href='?page=logout'><i class="fa fa-sign-out"></i>&nbspLogout</a>

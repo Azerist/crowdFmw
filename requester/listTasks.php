@@ -3,6 +3,9 @@
 
 $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") or dbErr($db);
 
+if($query->num_rows == 0)
+	echo "<p>No tasks foud</p>";
+else{
 ?>
 <p>
 <table>
@@ -32,7 +35,7 @@ $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") o
 				?>
 			</td>
 			<td><?="$result[current]/$result[target]"?></td>
-			<td><?=$task['reward']?></td>
+			<td><?=$result['reward']?></td>
 			<td><a href='?page=deleteTask&id=<?=$result['id']?>'>Delete</a></td>
 		</tr>
 		<?php
@@ -41,3 +44,5 @@ $query = $db->query("SELECT * FROM task WHERE id_requester=$_SESSION[userid]") o
 	</tbody>
 </table>
 </p>
+<?php
+}

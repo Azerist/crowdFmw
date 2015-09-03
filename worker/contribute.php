@@ -51,3 +51,4 @@ $db->query("UPDATE task SET status='completed' WHERE id=$_GET[task] AND current>
 
 ?>
 <p>Contribution successfully registered.</p>
+<a class='button' href='?page=index'>Return to the index</a>

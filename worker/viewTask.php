@@ -15,13 +15,12 @@ if($query->num_rows == 0)
 $task = $query->fetch_assoc();
 ?>
 <h3><?=$task['name']?></h3>
-<p><?=$task['description']?></p>
-<hr/>
+<p><b>Task description :</b><?=$task['description']?></p>
 <form action="?page=contribute&task=<?=$_GET['id']?>" method="post" accept-charset="utf-8">
 	<?php
 	//Get the task questions
 	$query = $db->query("SELECT * FROM question WHERE id_task=$_GET[id]") or dbErr($db);
-	
+
 	//Display each question
 	while($question = $query->fetch_assoc()){
 		echo "<h3>$question[question]</h3>";
@@ -38,7 +37,6 @@ $task = $query->fetch_assoc();
 		while($answer = $query2->fetch_assoc())
 			echo "<input type='radio' name='ans-$question[id]' value='$answer[id]'/> $answer[answer]<br/>";
 
-		echo "<hr/>";
 	}
 	?>
 	<input type="submit"/>

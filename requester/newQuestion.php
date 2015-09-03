@@ -64,7 +64,7 @@ if(isset($_POST['question'])){
 			}
 			?>
 			<p>Question successfully added</p>
-			<a href=''>Add a new question</a> <a href='?page=index'>return to the index</a>
+			<a class='button' href=''>Add a new question</a>
 			<?php
 			$db->close();
 			exit();
@@ -93,7 +93,7 @@ if(isset($_POST['question'])){
 	?>
 	</select>
 	<hr/>
-	Question : <textarea name="question" cols="50" rows="1" maxlenght='256'></textarea><br/>
+	Question : <br/><textarea name="question" cols="50" rows="1" maxlenght='256'></textarea><br/>
 	<hr/>
 	Input file type : <select name='inputType'><option selected>none</option>
 		<?php

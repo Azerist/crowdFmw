@@ -19,7 +19,7 @@ if(isset($_POST['taskName']))
 		$cost = $_POST['target']*$_POST['reward'];
 		if($total + $cost > $balance)
 			error("Insuficient balance : Your balance is $balance, this task costs $cost, and your other unfinished tasks cost $total",$db);
-			
+
 		//Create the two parts of the sql query
 		$sql1 = "INSERT INTO task(name,id_requester,status,target,reward";
 		$sql2 = "VALUES ('".str_replace("'","''",$_POST['taskName'])."',$_SESSION[userid],'$_POST[assignment]',$_POST[target],$_POST[reward]";
@@ -42,10 +42,7 @@ if(isset($_POST['taskName']))
 		$query = $db->query($sql1.$sql2) or dbErr($db);
 		?>
 		<p>Task successfully inserted into database.</p>
-		<a href='?page=newQuestion'>Add a question</a><br/>
-		<a href='?page=listTasks'>See your tasks list</a><br/>
-		<a href='?page=index'>return to index</a>
-		<hr/>
+		<a class='button' href='?page=newQuestion'>Add a question to this task</a><br/>
 
 		<?php
 	}

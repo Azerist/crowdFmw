@@ -7,8 +7,9 @@ if(!isset($_GET['id']))
 //if the form has been submitted, treat the data
 if(isset($_POST['username']) && $_POST['username'] != ''){
 	$db->query("UPDATE requester SET username='$_POST[username]' WHERE id=$_GET[id]") or dbErr($db);
+	echo "<p>Username successfully updated.</p>";
 
-	if(isset($_POST['password']) && $_POST['username'] != '' && $_POST['password']==$_POST['password2']){
+	if(isset($_POST['password']) && $_POST['password'] != '' && $_POST['password']==$_POST['password2']){
 		$db->query("UPDATE requester SET password='".password_hash($_POST['password'], PASSWORD_DEFAULT)."' WHERE id=$_GET[id]") or dbErr($db);
 		echo "<p>password correctly changed.</p>";
 	}
@@ -42,6 +43,14 @@ $requester = $query->fetch_assoc();
 </form>
 
 <h2>Requester's tasks :</h2>
+<?php
+//get the tasks linked to the requester
+$query = $db->query("SELECT * FROM task WHERE id_requester=$_GET[id]") or dbErr();
+
+if($query->num_rows == 0)
+	echo "<p>No tasks found</p>";
+else{
+?>
 <p>
 <table>
 	<thead>
@@ -57,19 +66,20 @@ $requester = $query->fetch_assoc();
 	<tbody>
 
 <?php
-//get the tasks linked to the requester
-$query = $db->query("SELECT * FROM task WHERE id_requester=$_GET[id]") or dbErr();
 
-while($task = $query->fetch_assoc())
-	echo "<tr>\n<td><a href='?page=viewTask&id=$task[id]' class='special'>$task[name]</a></td>\n<td>$task[description]</td>\n<td>",
-	if($result['status'] == 'waiting')
+while($task = $query->fetch_assoc()){
+	echo "<tr>\n<td><a href='?page=viewTask&id=$task[id]'>$task[name]</a></td>\n<td>$task[description]</td>\n<td>";
+	if($task['status'] == 'waiting')
 		echo "<a href='?page=assign&id=$result[id]' title='assign task'>waiting</a>";
 	else
-		echo $result['status'];
+		echo $task['status'];
 	echo "</td>\n<td>$task[current]/$task[target]</td>\n<td>$task[reward]</td>\n<td><a href='?page=deleteTask&id=$task[id]'>Delete</a></td>\n
 				</tr>\n";
-
+}
 ?>
 	</tbody>
 </table>
 </p>
+<?php
+}
+?>

@@ -10,7 +10,8 @@ $query = $db->query("SELECT task.id, task.name, task.description, reward FROM ta
 if($query->num_rows != 0){
 	?>
 	<h3>Tasks assigned to you :</h3>
-	<table border='1'>
+	<p>
+	<table>
 		<thead>
 			<tr>
 				<th>Task name</th>
@@ -32,6 +33,7 @@ if($query->num_rows != 0){
 	?>
 		</tbody>
 	</table>
+</p>
 	<?php
 }
 
@@ -46,7 +48,8 @@ $query = $db->query("SELECT id,name,description,reward FROM task WHERE status='o
 if($query->num_rows != 0){
 	?>
 	<h3>Open tasks :</h3>
-	<table border='1'>
+	<p>
+	<table>
 		<thead>
 			<tr>
 				<th>Task name</th>
@@ -68,6 +71,7 @@ if($query->num_rows != 0){
 	?>
 		</tbody>
 	</table>
+</p>
 	<?php
 }
 

@@ -2,7 +2,7 @@
 <?php
 
 if(isset($_POST['regUN'])){		//If the complete register form has already be submitted, treat the data
-	
+
 	//Check if the username and password are correct
 	if($_POST['regUN'] == '' || $_POST['pass'] == '')
 		echo 'Please enter a username and a password.';
@@ -18,7 +18,7 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 		$sql->sql1 = "INSERT INTO $_POST[regType](username,password";
 		$sql->sql2 = "VALUES ('$_POST[regUN]','".password_hash($_POST['pass'], PASSWORD_DEFAULT)."'";
 		$sql->ok = TRUE;
-		
+
 		//If the user is registering as a worker, treat the features
 		if($_POST['regType'] == 'worker'){
 			$features = scandir("features");
@@ -33,19 +33,19 @@ if(isset($_POST['regUN'])){		//If the complete register form has already be subm
 						echo $sql->err;
 						break;
 					}
-				}	
+				}
 			}
 		}
 		if($sql->ok){
 			//Insert the data
-	
+
 			$sql->sql1 = $sql->sql1.')';
 			$sql->sql2 = $sql->sql2.')';
-	
+
 			$query = $db->query($sql->sql1.$sql->sql2) or dbErr($db);
 			?>
 			<p>Account succesfully created !</p>
-			<a href='.?page=login'>Go back to the login page</a>
+			<a class="button" href='.?page=login'>Go back to the login page</a>
 			<?php
 			$db->close();
 			exit();
@@ -71,7 +71,7 @@ if(isset($_POST['regType'])){ 	//treat the data from the first form, and generat
 					$feat = new $class();
 					$feat->htmlForm();
 					echo "<br/>";
-				}	
+				}
 			}
 		}
 		?>

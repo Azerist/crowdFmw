@@ -99,7 +99,9 @@ Current number of contributions : <?=$task['current']?></p>
 //Get all the questions linked to this task from database
 $query = $db->query('SELECT * FROM question WHERE id_task='.$task['id']) or dbErr($db);
 
-if($query->num_rows !=0){
+if($query->num_rows ==0)
+	echo "<p>this task has no question.</p>";
+else{
 	?>
 	<h3>Questions linked to this task:</h3>
 	<p>
@@ -147,3 +149,4 @@ if($query->num_rows !=0){
 
 ?>
 <a class="button" href='?page=newQuestion&task=<?=$_GET['id']?>'>Add a question to this task</a>
+<a class="button" href='?page=deleteTask&id=<?=$_GET['id']?>'>Delete this task</a>
